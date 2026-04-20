@@ -4,36 +4,60 @@ title: Home
 permalink: /
 ---
 
-# Welcome to Youth Opportunities
-
-Your gateway to internships, scholarships, and career opportunities
-
-[Explore Opportunities]({{ '/opportunities' | relative_url }}){: .btn}
+<section class="hero">
+    <div class="container">
+        <h1>Welcome to Youth Opportunities</h1>
+        <p>Your gateway to internships, scholarships, and career opportunities designed for ambitious students and graduates</p>
+        <a href="{{ '/opportunities' | relative_url }}" class="btn">Explore Opportunities</a>
+    </div>
+</section>
 
 ## Why Choose Us?
 
-📚 **Curated Opportunities**
-: Handpicked internships, scholarships, and job placements specifically for students and graduates.
-
-🎯 **Easy Discovery**
-: Browse through opportunities by field, duration, and location. Find what matches your goals.
-
-🚀 **Career Growth**
-: Gain practical experience and build your professional network with leading companies.
-
-🌍 **Global Reach**
-: Access opportunities from organizations around the world, right from your fingertips.
+<div class="cards-grid">
+    <div class="card">
+        <div class="card-icon">📚</div>
+        <h3>Curated Opportunities</h3>
+        <p>Handpicked internships, scholarships, and job placements specifically for students and graduates.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-icon">🎯</div>
+        <h3>Easy Discovery</h3>
+        <p>Browse through opportunities by field, duration, and location. Find what matches your goals.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-icon">🚀</div>
+        <h3>Career Growth</h3>
+        <p>Gain practical experience and build your professional network with leading companies.</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-icon">🌍</div>
+        <h3>Global Reach</h3>
+        <p>Access opportunities from organizations around the world, right from your fingertips.</p>
+    </div>
+</div>
 
 ## Get Started
 
-### 1. Browse
-Check out our current opportunities page to find positions that interest you.
-
-### 2. Apply
-Follow the application instructions for your chosen opportunity.
-
-### 3. Succeed
-Join thousands of students who have advanced their careers through our platform.
+<div class="cards-grid">
+    <div class="card">
+        <h3>1️⃣ Browse</h3>
+        <p>Check out our current opportunities page to find positions that interest you.</p>
+    </div>
+    
+    <div class="card">
+        <h3>2️⃣ Apply</h3>
+        <p>Follow the application instructions for your chosen opportunity.</p>
+    </div>
+    
+    <div class="card">
+        <h3>3️⃣ Succeed</h3>
+        <p>Join thousands of students who have advanced their careers through our platform.</p>
+    </div>
+</div>
 
 ---
 

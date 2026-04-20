@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title }} | Youth Opportunities</title>
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
@@ -20,12 +21,14 @@
     </nav>
 
     <main>
-        {{ content }}
+        <div class="container">
+            {{ content }}
+        </div>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2026 Youth Opportunities. All rights reserved.</p>
+            <p>&copy; 2026 Youth Opportunities. All rights reserved. | Open Source Project</p>
         </div>
     </footer>
 </body>

@@ -1,0 +1,15 @@
+title: Youth Opportunities
+description: Discover amazing opportunities for university students and graduates
+baseurl: ""
+url: "https://yourdomain.com"
+markdown: kramdown
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-feed

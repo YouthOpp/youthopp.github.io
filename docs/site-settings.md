@@ -14,6 +14,8 @@ Run `npm test` and `npm run build` with Node.js 22. Set `CATALOG_PATH` to the pu
 
 The workflow reads the `catalog-latest` manifest from the original `YouthOpp/data-pipeline` repository, retrieves catalog and contributor assets from the same immutable release, and verifies digests and byte sizes. Production Actions pins `YouthOpp/data-pipeline`; a stale `DATA_REPOSITORY` repository variable cannot redirect production to a development fork. The downloader accepts an explicit repository override for tests/local development only. Production deploys only `YouthOpp/youthopp.github.io` main. Pull requests run tests and an empty-state documentation build.
 
+Cloudflare Pages hosting is also supported; see [Cloudflare deployment](/docs/cloudflare-pages/) for the Node build command and `dist` output. Choose the hosting provider that owns the production domain and verify its build settings.
+
 ## Analytics: the exact field
 
 Create a Google Analytics 4 web data stream for https://youthopps.org. In `site.config.json`, set `googleAnalyticsId` to its Measurement ID, for example `G-XXXXXXXXXX`. The configured production Measurement ID is `G-MGW77TH5Z3`. Enter only the ID, not a script snippet or API secret. Leave it empty to disable analytics. The shared template includes `assets/analytics.js` only for a valid ID. That script loads Google tracking only after the visitor selects Allow analytics; Decline keeps tracking off. Update `docs/privacy.md` to reflect the actual analytics account, purpose and contact before enabling it. Do not paste analytics into individual pages.

@@ -16,6 +16,9 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
 
+include:
+  - _headers
+
 exclude:
   - README.md
   - docs

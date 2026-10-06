@@ -1,7 +1,8 @@
 title: Youth Opportunities
 description: Discover amazing opportunities for university students and graduates
 baseurl: ""
-url: "https://yourdomain.com"
+url: "https://youthopps.org"
+analytics_id: "G-MGW77TH5Z3"
 markdown: kramdown
 
 defaults:
@@ -13,3 +14,10 @@ defaults:
 plugins:
   - jekyll-seo-tag
   - jekyll-feed
+  - jekyll-sitemap
+
+exclude:
+  - README.md
+  - docs
+  - Gemfile
+  - Gemfile.lock

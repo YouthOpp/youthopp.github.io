@@ -6,9 +6,10 @@ permalink: /
 
 <section class="hero">
     <div class="container">
-        <h1>Welcome to Youth Opportunities</h1>
+        <span class="eyebrow">Your next chapter starts here</span>
+        <h1>Big ambitions.<br>New opportunities.</h1>
         <p>Your gateway to internships, scholarships, and career opportunities designed for ambitious students and graduates</p>
-        <a href="{{ '/opportunities' | relative_url }}" class="btn">Explore Opportunities</a>
+        <a href="{{ '/opportunities/' | relative_url }}" class="btn">Explore Opportunities &rarr;</a>
     </div>
 </section>
 
@@ -82,4 +83,4 @@ This is a Jekyll-based project - simple to understand and easy to contribute to!
 3. Submit a pull request
 4. We'll review and merge your contribution!
 
-**Check out the [project on GitHub](https://github.com/yourusername/youthopp.github.io-1)** and start contributing today. All skill levels welcome! 🚀
+**Check out the [project on GitHub](https://github.com/YouthOpp/youthopp.github.io)** and start contributing today. All skill levels welcome! 🚀

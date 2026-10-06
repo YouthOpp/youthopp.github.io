@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ page.title }} | Youth Opportunities</title>
+    {% seo %}
+    {% feed_meta %}
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <a class="skip-link" href="#content">Skip to content</a>
     <nav class="navbar">
         <div class="container">
             <div class="logo">
-                <a href="{{ '/' | relative_url }}">🚀 Youth Opportunities</a>
+                <a href="{{ '/' | relative_url }}">YouthOpps<span class="logo-dot">.</span></a>
             </div>
             <ul class="nav-links">
                 <li><a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Home</a></li>
@@ -20,7 +22,7 @@
         </div>
     </nav>
 
-    <main>
+    <main id="content">
         <div class="container">
             {{ content }}
         </div>
@@ -31,5 +33,14 @@
             <p>&copy; 2026 Youth Opportunities. All rights reserved. | Open Source Project</p>
         </div>
     </footer>
+    {% if jekyll.environment == 'production' and site.analytics_id %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.analytics_id }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ site.analytics_id }}');
+    </script>
+    {% endif %}
 </body>
 </html>

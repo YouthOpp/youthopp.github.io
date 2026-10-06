@@ -5,10 +5,10 @@
 }
 
 :root {
-    --primary-color: #6366f1;
-    --primary-dark: #4f46e5;
+    --primary-color: #245e4e;
+    --primary-dark: #19483b;
     --primary-light: #818cf8;
-    --secondary-color: #ec4899;
+    --secondary-color: #39816a;
     --accent-color: #f59e0b;
     --success-color: #10b981;
     --light-bg: #f8fafc;
@@ -23,11 +23,21 @@ html {
     scroll-behavior: smooth;
 }
 
+.skip-link { position: absolute; left: 1rem; top: -5rem; z-index: 200; background: white; padding: .7rem 1rem; }
+.skip-link:focus { top: 1rem; }
+a:focus-visible, button:focus-visible { outline: 3px solid #d18c13; outline-offset: 4px; }
+.eyebrow { display: block; font-size: .8rem; text-transform: uppercase; letter-spacing: .16em; font-weight: 700; margin-bottom: 1.5rem; }
+.logo-dot { color: #d18c13; }
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
 body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: var(--dark-text);
-    background: linear-gradient(135deg, var(--light-bg) 0%, #f8f4ff 100%);
+    background: #faf9f6;
     min-height: 100vh;
 }
 
@@ -151,6 +161,7 @@ main {
 }
 
 .hero h1 {
+    color: var(--white);
     font-size: 3.5rem;
     margin-bottom: 1.5rem;
     font-weight: 800;
@@ -158,6 +169,7 @@ main {
 }
 
 .hero p {
+    color: var(--white);
     font-size: 1.3rem;
     margin-bottom: 2.5rem;
     opacity: 0.95;

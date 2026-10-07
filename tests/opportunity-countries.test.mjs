@@ -14,6 +14,7 @@ test('country selection includes later pages and opens records instead of publis
   const list=await fs.readFile(path.join(out,'opportunities/index.html'),'utf8');
   assert.ok(list.includes('data-route="/opportunities/from/de/"'));assert.ok(list.includes('data-route="/countries/fr/"'));
   assert.ok(result.routes.includes('/opportunities/from/de/'));
+  const script=list.match(/src="(\/assets\/index\.[a-f0-9]{16}\.js)"/)[1];assert.equal(await fs.readFile(path.join(out,script),'utf8'),await fs.readFile(new URL('../assets/index.js',import.meta.url),'utf8'));
   const german=await fs.readFile(path.join(out,'opportunities/from/de/index.html'),'utf8');
   assert.ok(german.includes('class="opportunity"'));assert.ok(german.includes('Programme 30'));assert.ok(!german.includes('class="source-card"'));
   assert.ok(!german.includes('Programme 0</a>'));

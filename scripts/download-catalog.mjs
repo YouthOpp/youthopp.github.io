@@ -1,12 +1,17 @@
-import {execFile} from 'node:child_process';
-import {promisify} from 'node:util';
 import {createHash} from 'node:crypto';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {validateContributorData} from './build.mjs';
-const execFileAsync=promisify(execFile);
+
+export async function downloadReleaseAsset(repository,tag,asset,dest){
+ const url=`https://github.com/${repository}/releases/download/${encodeURIComponent(tag)}/${encodeURIComponent(asset)}`;
+ const response=await fetch(url,{signal:AbortSignal.timeout(60000)});
+ if(!response.ok)throw new Error(`Release asset ${asset} unavailable (HTTP ${response.status})`);
+ const bytes=Buffer.from(await response.arrayBuffer());
+ await fs.writeFile(path.join(dest,asset),bytes);
+}
 
 export function validateManifest(manifest, assetName='catalog.json'){
  if(manifest?.schema_version!==1||!/^catalog-\d+-\d+$/.test(manifest?.release_tag||''))throw new Error('Invalid catalog manifest version or immutable release tag');
@@ -20,14 +25,20 @@ export function verifyCatalog(bytes,manifest,assetName='catalog.json'){
  if(createHash('sha256').update(bytes).digest('hex')!==asset.sha256)throw new Error('Catalog SHA-256 mismatch');
  return asset;
 }
-export async function downloadCatalog({repository=process.env.DATA_REPOSITORY||'YouthOpp/data-pipeline',out='data/catalog.json',contributorsOut=path.join(path.dirname(out),'contributors.json'),download}={}){
+export async function downloadCatalog({repository=process.env.DATA_REPOSITORY||'YouthOpp/data-pipeline',out='data/catalog.json',contributorsOut=path.join(path.dirname(out),'contributors.json'),pointer=path.join(path.dirname(fileURLToPath(import.meta.url)),'../catalog-release.json'),download}={}){
  if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw new Error('Invalid data repository');
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'youthopp-release-'));
- const fetchAsset=download||((tag,asset,dest)=>execFileAsync('gh',['release','download',tag,'--repo',repository,'--pattern',asset,'--dir',dest]));
+ const fetchAsset=download||((tag,asset,dest)=>downloadReleaseAsset(repository,tag,asset,dest));
  try{
-  await fetchAsset('catalog-latest','manifest.json',dir);
-  const manifest=JSON.parse(await fs.readFile(path.join(dir,'manifest.json'),'utf8'));
+  let releasePointer;
+  try{releasePointer=JSON.parse(await fs.readFile(pointer,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+  if(releasePointer&&(releasePointer.schema_version!==1||releasePointer.repository!==repository||!/^catalog-\d+-\d+$/.test(releasePointer.release_tag)||!/^[a-f0-9]{64}$/.test(releasePointer.manifest_sha256)))throw new Error('Invalid catalog release pointer');
+  await fetchAsset(releasePointer?.release_tag||'catalog-latest','manifest.json',dir);
+  const manifestBytes=await fs.readFile(path.join(dir,'manifest.json'));
+  if(releasePointer&&createHash('sha256').update(manifestBytes).digest('hex')!==releasePointer.manifest_sha256)throw new Error('Release manifest SHA-256 mismatch');
+  const manifest=JSON.parse(manifestBytes);
   const {releaseTag}=validateManifest(manifest);
+  if(releasePointer&&releaseTag!==releasePointer.release_tag)throw new Error('Release pointer does not match manifest');
   validateManifest(manifest,'contributors.json');
   await fetchAsset(releaseTag,'catalog.json',dir);
   const bytes=await fs.readFile(path.join(dir,'catalog.json'));
@@ -47,3 +58,4 @@ export async function downloadCatalog({repository=process.env.DATA_REPOSITORY||'
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 }
 if(process.argv[1]===fileURLToPath(import.meta.url))await downloadCatalog();
+

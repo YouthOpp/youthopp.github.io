@@ -30,4 +30,5 @@ Nonprofit purpose is not registered charitable status. Listings imply neither pa
 
 ## Operating cost
 
-Use public GitHub repositories, scheduled Actions and GitHub Pages as the baseline. A free architecture operates within provider limits, not unlimited resources. Document quotas, bounded fetching and degradation rather than promise unconditional free availability.
+Use public GitHub repositories, scheduled Actions and Cloudflare Pages as the baseline. A free architecture operates within provider limits, not unlimited resources. Document quotas, bounded fetching and degradation rather than promise unconditional free availability.
+

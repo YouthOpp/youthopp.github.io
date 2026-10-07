@@ -8,7 +8,7 @@ The project idea, development and management use AI agents under human direction
 
 ## Free baseline
 
-GitHub repositories hold code and source definitions; Actions runs collection and static builds; release assets publish normalized data; GitHub Pages hosts HTML, CSS and JavaScript. There is no runtime backend, database, mandatory paid API or inference service. Public hosting and automation have quotas and operational limits. The application remains useful without analytics and without browser JavaScript.
+GitHub repositories hold code and source definitions; Actions runs collection and validation; release assets publish normalized data; Cloudflare Pages builds and hosts HTML, CSS and JavaScript. There is no runtime backend, database, mandatory paid API or inference service. Public hosting and automation have quotas and operational limits. The application remains useful without analytics and without browser JavaScript.
 
 ## Repository responsibilities
 
@@ -41,3 +41,4 @@ Production configuration targets the original YouthOpp repositories for collecti
 ## Documentation authority
 
 Pipeline technical architecture, data contracts, adapter instructions and operations live in this website repository’s `docs/` and render under https://youthopps.org/docs/. The pipeline links to those pages rather than maintaining a second independently edited technical guide. Executable schemas, adapter fixtures, source manifests and datasets remain owned by the pipeline.
+

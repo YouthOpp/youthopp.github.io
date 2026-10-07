@@ -1,11 +1,9 @@
-name: Validate and publish website
+name: Validate website
 on:
   pull_request:
   push:
     branches: [main]
   workflow_dispatch:
-  schedule:
-    - cron: '25 */6 * * *'
 permissions:
   contents: read
 concurrency:
@@ -14,8 +12,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      artifact_name: github-pages-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,7 +22,6 @@ jobs:
       - name: Download versioned pipeline release
         if: github.event_name != 'pull_request'
         env:
-          GH_TOKEN: ${{ github.token }}
           DATA_REPOSITORY: YouthOpp/data-pipeline
         run: node scripts/download-catalog.mjs
       - name: Build production catalog
@@ -34,25 +29,7 @@ jobs:
           CATALOG_PATH: data/catalog.json
           REQUIRE_CATALOG: ${{ github.event_name == 'pull_request' && '0' || '1' }}
         run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
-          name: github-pages-${{ github.run_attempt }}
+          name: website-${{ github.run_attempt }}
           path: dist
-  deploy:
-    if: github.repository == 'YouthOpp/youthopp.github.io' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-      - name: Deploy GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          artifact_name: ${{ needs.build.outputs.artifact_name }}

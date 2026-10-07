@@ -1,91 +1,23 @@
-# Youth Opportunities Website
+# YouthOpp website
 
-A clean and modern Jekyll website for university students and graduates to discover internships, scholarships, and career opportunities.
+An English-language static opportunity catalog for nonprofit public benefit. Source titles preserve original language. Built using AI agents under human maintainer direction.
 
-## Features
+## Run
 
-- 🏠 **Homepage** - Welcoming landing page with feature highlights
-- 🎯 **Opportunities Page** - Browse and discover various opportunities
-- 📱 **Responsive Design** - Works great on mobile, tablet, and desktop
-- ⚡ **Fast & Lightweight** - Built with Jekyll for optimal performance
-- 🎨 **Modern Styling** - Clean, professional design with smooth interactions
+Node.js 22 or newer; no dependencies or paid backend.
 
-## Pages
-
-1. **Home** (`/`) - Main landing page with introduction and feature cards
-2. **Opportunities** (`/opportunities/`) - Explore featured internships, scholarships, and jobs
-
-## Getting Started
-
-### Prerequisites
-- Ruby (version 2.5 or higher)
-- Bundler
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd youthopp.github.io-1
+```sh
+npm test
+CATALOG_PATH=../data-pipeline/dist/catalog.json CONTRIBUTORS_PATH=../data-pipeline/dist/contributors.json npm run build
+python3 -m http.server 8080 --directory dist
 ```
 
-2. Install dependencies:
-```bash
-bundle install
-```
+Output: `dist/`. Without catalog data development builds show an honest empty state. Production requires the pipeline catalog and contributor snapshot from the same integrity-verified immutable release. The website does not collect source data or contributor history. Tests use temporary explicit fixtures, never published as real listings.
 
-3. Run the development server:
-```bash
-bundle exec jekyll serve
-```
+Configure `site.config.json` for canonical domain, webmaster verification and optional consent-gated analytics. Documentation in `docs/*.md` is published at `/docs/`. Build-time pagination keeps catalog data out of browser downloads.
 
-4. Open your browser and navigate to `http://localhost:4000`
+Original project repositories: [YouthOpp/youthopp.github.io](https://github.com/YouthOpp/youthopp.github.io), [YouthOpp/data-pipeline](https://github.com/YouthOpp/data-pipeline), and [YouthOpp/.github](https://github.com/YouthOpp/.github). Production collection and publication use these original YouthOpp repositories. Development forks are only contribution branches and historical test evidence.
 
-## Project Structure
+Production address: https://youthopps.org. Configure branding, canonical metadata, analytics and verification centrally in `site.config.json`; see [Website settings](docs/site-settings.md) for the exact fields and domain setup.
 
-```
-├── _layouts/
-│   └── default.html       # Main layout template
-├── assets/
-│   └── css/
-│       └── style.css      # Custom styling
-├── _config.yml            # Jekyll configuration
-├── index.md              # Home page
-├── opportunities.md      # Opportunities page
-├── Gemfile               # Ruby dependencies
-└── README.md             # This file
-```
-
-## Customization
-
-### Update Site Information
-Edit `_config.yml` to update:
-- Site title
-- Description
-- Base URL
-- Site URL
-
-### Add More Opportunities
-Edit `opportunities.md` to add, remove, or modify opportunities. Each opportunity uses a consistent card format.
-
-### Modify Styling
-Update `assets/css/style.css` to change colors, fonts, spacing, and layout.
-
-## Color Scheme
-
-- Primary: `#007bff` (Blue)
-- Secondary: `#6c757d` (Gray)
-- Success: `#28a745` (Green)
-- Light Background: `#f8f9fa`
-
-## Deployment
-
-### GitHub Pages
-
-1. Push your code to GitHub
-2. Enable GitHub Pages in repository settings
-3. Your site will be live at `https://<username>.github.io/`
-
-## License
-
-This project is open source and available under the MIT License.
+Pipeline technical documentation is maintained in this repository’s `docs/` and published under [Website Docs](https://youthopps.org/docs/). Start with [Pipeline architecture](https://youthopps.org/docs/architecture/), [Adapter guide](https://youthopps.org/docs/pipeline-adapters/) and [Pipeline operations](https://youthopps.org/docs/pipeline-operations/).

@@ -1,0 +1,35 @@
+name: Validate website
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test static generation
+        run: npm test
+      - name: Download versioned pipeline release
+        if: github.event_name != 'pull_request'
+        env:
+          DATA_REPOSITORY: YouthOpp/data-pipeline
+        run: node scripts/download-catalog.mjs
+      - name: Build production catalog
+        env:
+          CATALOG_PATH: data/catalog.json
+          REQUIRE_CATALOG: ${{ github.event_name == 'pull_request' && '0' || '1' }}
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website-${{ github.run_attempt }}
+          path: dist

@@ -1,0 +1,52 @@
+{
+  "title": "YouthOpp",
+  "url": "https://youthopps.org",
+  "description": "Find scholarships, internships and opportunities from original sources. An open, AI-built community project for young people.",
+  "pageSize": 30,
+  "googleVerification": "",
+  "bingVerification": "",
+  "googleAnalyticsId": "G-MGW77TH5Z3",
+  "tagline": "More opportunity. Less searching.",
+  "brandCaption": "Open opportunity index",
+  "mission": "Nonprofit purpose. Open source. Built with AI, shaped by people.",
+  "organizationDescription": "An independent open-source opportunity discovery project with a nonprofit purpose.",
+  "repositoryUrl": "https://github.com/YouthOpp/youthopp.github.io",
+  "logoPath": "/assets/logo.svg",
+  "socialImagePath": "/assets/social-preview.png",
+  "navigation": [
+    [
+      "/opportunities/",
+      "Explore"
+    ],
+    [
+      "/sources/",
+      "Sources"
+    ],
+    [
+      "/about/",
+      "Our mission"
+    ],
+    [
+      "/docs/",
+      "Docs"
+    ],
+    [
+      "/contributors/",
+      "Community"
+    ]
+  ],
+  "footerLinks": [
+    [
+      "/about/",
+      "About the project"
+    ],
+    [
+      "/docs/contributing/",
+      "Contribute"
+    ],
+    [
+      "/docs/privacy/",
+      "Privacy & source policy"
+    ]
+  ]
+}

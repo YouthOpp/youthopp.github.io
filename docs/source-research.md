@@ -590,8 +590,8 @@ Merged-main fork producer run 37274664011 passed 48 tests and published immutabl
 FNR record `8d24597c237a1ff602abeaed` preserves AFdoc-FNR, original publication `2026-07-29T13:25:54.000Z`, empty summary, unknown application availability, null deadline and empty host/eligible countries. No automated eligibility or application-window inference. Website acceptance is separate.
 
 
-## Browsing sources by country
+## Browsing collected records by country
 
-The Countries navigation opens `/sources/countries/`, with a publisher directory for each country. These pages use `publisher_country` from the published source registry and include sources with collection errors so their health remains visible. Sources without a country code appear under International / unspecified.
+The Countries menu opens `/opportunities/countries/`, with destination collections and publisher-country collections. `/opportunities/from/<country>/` displays actual collected opportunity/programme rows; `/sources/countries/<country>/` remains the separate publisher directory. Country options open complete static country collections, including records from later pagination pages. Category pages retain the category when changing publisher country.
 
-Publisher country is separate from opportunity destination (`host_countries`) and applicant eligibility (`eligible_countries`). Destination filters continue to use only verified opportunity data; a publisher country never fills missing destination or eligibility fields.
+Country provenance is explicit: publisher country comes from the registry or normalized record; destination comes from the record's `host_countries`, supported by the original title or reviewed programme evidence. Publisher country never fills unknown destination or eligibility. `/collection/` reports source collection errors and distinguishes classified records from unclassified metadata. `build-report.json` and the Actions post-build check verify that catalog records and country collection pages were generated.

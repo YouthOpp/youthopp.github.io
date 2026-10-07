@@ -29,6 +29,9 @@ jobs:
           CATALOG_PATH: data/catalog.json
           REQUIRE_CATALOG: ${{ github.event_name == 'pull_request' && '0' || '1' }}
         run: npm run build
+      - name: Verify rendered catalog and country collections
+        if: github.event_name != 'pull_request'
+        run: node scripts/verify-build.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: website-${{ github.run_attempt }}

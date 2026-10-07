@@ -24,7 +24,8 @@ test('publisher country pages include failed sources without inferring opportuni
   assert.ok(german.includes('href="/project/sources/countries/fr/"'));
   const global=await fs.readFile(path.join(out,'sources/countries/international/index.html'),'utf8');assert.ok(global.includes('<h2>Global publisher</h2>'));
   const opportunity=await fs.readFile(path.join(out,'opportunity/record/index.html'),'utf8');assert.ok(opportunity.includes('<dt>Destination</dt><dd>Not provided</dd>'));
-  const home=await fs.readFile(path.join(out,'index.html'),'utf8');assert.ok(home.includes('>Countries</a>'));assert.ok(home.includes('href="/project/sources/countries/de/"'));
+  const home=await fs.readFile(path.join(out,'index.html'),'utf8');assert.ok(home.includes('>Countries</a>'));assert.ok(home.includes('href="/project/opportunities/from/de/"'));
   const sitemap=await fs.readFile(path.join(out,'sitemap.xml'),'utf8');assert.ok(sitemap.includes('https://example.org/project/sources/countries/fr/'));
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });
+

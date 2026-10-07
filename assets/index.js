@@ -1,4 +1,4 @@
-// Filter only the bounded, server-rendered page; never fetch the entire catalog.
+// Country choices navigate to complete static collections, including later pages.
 const form = document.querySelector('.index-search');
 if (form) {
   const rows = [...document.querySelectorAll('tr.opportunity')];
@@ -9,7 +9,8 @@ if (form) {
     const country = form.elements.country.value;
     let count = 0;
     for (const row of rows) {
-      const countries = row.dataset.countries.split(' ').filter(Boolean);
+      const basis = form.elements.country.selectedOptions[0]?.dataset.basis;
+      const countries = (basis === 'destination' ? row.dataset.destinations : row.dataset.countries).split(' ').filter(Boolean);
       const matches = row.textContent.toLocaleLowerCase().includes(query) && (!country || (country === 'unknown' ? !countries.length : countries.includes(country)));
       row.hidden = !matches;
       if (matches) count++;
@@ -19,5 +20,11 @@ if (form) {
   };
   form.addEventListener('submit', event => { event.preventDefault(); filter(); });
   form.addEventListener('input', filter);
-  form.addEventListener('change', filter);
+  form.addEventListener('change', event => {
+    if (event.target === form.elements.country) {
+      const route = form.elements.country.selectedOptions[0]?.dataset.route;
+      if (route && route !== window.location.pathname) { window.location.assign(route); return; }
+    }
+    filter();
+  });
 }

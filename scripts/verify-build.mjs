@@ -11,7 +11,7 @@ for(const record of records){
  if(!html.includes('row-title')&&!html.includes('page-title'))throw Error('Empty opportunity detail');
 }
 for(const route of report.routes)await fs.access(path.join(out,route,'index.html'));
-for(const country of [...new Set(report.records.map(r=>r.publisher_country).filter(Boolean))]){
+for(const country of [...new Set(report.records.filter(r=>r.kind!=='unknown').map(r=>r.publisher_country).filter(Boolean))]){
  const route=`/opportunities/from/${country.toLowerCase()}/`;
  if(!report.routes.includes(route))throw Error('Missing publisher country record collection');
  const html=await fs.readFile(path.join(out,route,'index.html'),'utf8');

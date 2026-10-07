@@ -173,7 +173,8 @@ test('canonical record kinds override legacy tags and preserve information-only 
    if(id==='unknown-conflict'){assert.ok(html.includes('Indexed source page'));assert.ok(!html.includes('Read the original &amp; apply'));}
    assert.ok(!html.includes('Programme overview'));assert.ok(!html.includes('Institutional grant'));
    const row=(listing.match(/<tr class="opportunity"[^>]*>[\s\S]*?<\/tr>/g)||[]).find(row=>row.includes('/opportunity/'+id+'/"'));
-   assert.ok(row);assert.ok(!row.includes('Programme overview'));assert.ok(!row.includes('Institutional grant'));
+   if(id==='unknown-conflict')assert.equal(row,undefined,'unclassified publisher pages are not opportunity listings');
+   else {assert.ok(row);assert.ok(!row.includes('Programme overview'));assert.ok(!row.includes('Institutional grant'));}
   }
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });

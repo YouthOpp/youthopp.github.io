@@ -9,6 +9,7 @@ test('country selection includes later pages and opens records instead of publis
  try{
   const input=path.join(dir,'catalog.json');const out=path.join(dir,'site');
   const records=Array.from({length:31},(_,i)=>({id:`record-${i}`,title:`Programme ${i}`,summary:'',category:'scholarships',source:'publisher',publisher_country:i===30?'DE':'US',host_countries:i===30?['FR']:[],eligible_countries:[],kind:'programme-overview',status:'unknown',url:`https://example.org/${i}`}));
+  records.push({...records[30],id:'directory-only',title:'Publisher directory only',url:'https://example.org/directory',kind:'unknown'});
   await fs.writeFile(input,JSON.stringify({schema_version:1,opportunities:records,sources:[{source:'publisher',name:'Publisher',publisher_country:'US',website_url:'https://example.org'}]}));
   const result=await build({input,out});
   const list=await fs.readFile(path.join(out,'opportunities/index.html'),'utf8');
@@ -18,6 +19,7 @@ test('country selection includes later pages and opens records instead of publis
   const german=await fs.readFile(path.join(out,'opportunities/from/de/index.html'),'utf8');
   assert.ok(german.includes('class="opportunity"'));assert.ok(german.includes('Programme 30'));assert.ok(!german.includes('class="source-card"'));
   assert.ok(!german.includes('Programme 0</a>'));
-  const report=JSON.parse(await fs.readFile(path.join(out,'build-report.json'),'utf8'));assert.equal(report.records.length,31);
+  assert.ok(!german.includes('Publisher directory only'));await fs.access(path.join(out,'opportunity/directory-only/index.html'));
+  const report=JSON.parse(await fs.readFile(path.join(out,'build-report.json'),'utf8'));assert.equal(report.records.length,32);
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });

@@ -49,3 +49,6 @@ All generated categories and destination countries use the same consent-gated ev
 
 In GA4 Admin → Custom definitions, add event-scoped dimensions `category` and `country` to build comparison reports; `page_number` can be an event-scoped custom metric. Check `catalog_view`, `category_select`, `country_select` and `country_filter` in Realtime after a consented visit. Repository changes do not create these account-side reporting definitions.
 
+
+
+Contributor identities, commit counts and rankings are not published on the website. The Community navigation item and homepage person previews are removed. The build excludes the contributor page and scoring documentation from output and the sitemap; Cloudflare redirects their old routes to the homepage/docs. Producer release assets remain compatible with existing integrity checks, but contributor data is not rendered or copied into public site output.

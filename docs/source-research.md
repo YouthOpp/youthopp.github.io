@@ -588,3 +588,10 @@ Generic freshness text for recorded dated opportunity evidence now mirrors the e
 Merged-main fork producer run 37274664011 passed 48 tests and published immutable release catalog-37274664011-1 at 06:53:16 UTC. Downloaded artifact/native asset hashes matched the manifest. The catalog retained 39 records across eight integrations: seven source collections were healthy, including one FNR exact record; Scholarships Corner reported a fetch error and retained ten last-good records. This is dated producer evidence, not blanket current health.
 
 FNR record `8d24597c237a1ff602abeaed` preserves AFdoc-FNR, original publication `2026-07-29T13:25:54.000Z`, empty summary, unknown application availability, null deadline and empty host/eligible countries. No automated eligibility or application-window inference. Website acceptance is separate.
+
+
+## Browsing sources by country
+
+The Countries navigation opens `/sources/countries/`, with a publisher directory for each country. These pages use `publisher_country` from the published source registry and include sources with collection errors so their health remains visible. Sources without a country code appear under International / unspecified.
+
+Publisher country is separate from opportunity destination (`host_countries`) and applicant eligibility (`eligible_countries`). Destination filters continue to use only verified opportunity data; a publisher country never fills missing destination or eligibility fields.

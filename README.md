@@ -1,32 +1,22 @@
-<img src="assets/youthopp-icon-v1.png" width="80" height="80" alt="YouthOpp logo">
+# YouthOpps website
 
-# YouthOpp website
+Static opportunity discovery for [youthopps.org](https://youthopps.org), hosted on Cloudflare Pages. Original publishers remain authoritative.
 
-An English-language static opportunity catalog for nonprofit public benefit. Source titles preserve original language. Built using AI agents under human maintainer direction.
-
-## Run
-
-Node.js 22 or newer; no dependencies or paid backend.
+Use Node.js 22 or newer:
 
 ```sh
-npm test
 git submodule update --init --recursive
-CATALOG_PATH=data-source/catalog.json npm run build
+npm test
+npm run build
 python3 -m http.server 8080 --directory dist
 ```
 
-Output: `dist/`. Without catalog data development builds show an honest empty state. Production reads the pinned data-source submodule catalog. The website does not collect source data or contributor history. Tests use temporary explicit fixtures, never published as real listings.
+Every build reads `data-source/datas/<source-id>/{data,metadata}.json`; set `DATA_PATH` to select another compatible snapshot. Missing or malformed required input fails. Tests use temporary fixtures, never published listings. Output is `dist/`; upstream data remains read-only.
 
-Configure `site.config.json` for canonical domain, webmaster verification and optional consent-gated analytics. Documentation in `docs/*.md` is published at `/docs/`. Build-time pagination keeps catalog data out of browser downloads.
+Architecture, design, contribution and deployment guidance lives in [five short guides](docs/start-here.md). Configure branding, domain and optional consent-gated analytics in `site.config.json`. See [trust and asset rights](docs/trust.md) for provenance limitations.
 
-Original project repositories: [YouthOpps/youthopps.github.io](https://github.com/YouthOpps/youthopps.github.io), [YouthOpps/data-pipeline](https://github.com/YouthOpps/data-pipeline), and [YouthOpps/.github](https://github.com/YouthOpps/.github). Production collection and publication use these original YouthOpp repositories. Development forks are only contribution branches and historical test evidence.
+The three projects are [data-pipeline](https://github.com/YouthOpps/data-pipeline), [data-source](https://github.com/YouthOpps/data-source) and [website](https://github.com/YouthOpps/youthopps.github.io). The website checks hourly for a changed data revision; unchanged revisions do not trigger an update. A successful build does not confirm production deployment.
 
-Production address: https://youthopps.org. Configure branding, canonical metadata, analytics and verification centrally in `site.config.json`; see [Website settings](docs/site-settings.md) for the exact fields and domain setup.
+Questions: [Discussions](https://github.com/YouthOpps/youthopps.github.io/discussions). Bugs/removal requests: [Issues](https://github.com/YouthOpps/youthopps.github.io/issues). Private matters: **contact@youthopps.org**.
 
-Pipeline technical documentation is maintained in this repository’s `docs/` and published under [Website Docs](https://youthopps.org/docs/). Start with [Pipeline architecture](https://youthopps.org/docs/architecture/), [Adapter guide](https://youthopps.org/docs/pipeline-adapters/) and [Pipeline operations](https://youthopps.org/docs/pipeline-operations/).
-
-
-
-## Contact and support
-
-For questions, proposals and project support, use [GitHub Discussions](https://github.com/YouthOpps/youthopps.github.io/discussions) first. For reproducible bugs, data problems or concrete work items, open a [GitHub Issue](https://github.com/YouthOpps/youthopps.github.io/issues). Email **contact@youthopps.org** when GitHub is unsuitable, especially for private or sensitive communication.
+`docs/ai-rules.md` links to the authoritative AI rules and skills in ai-workspace on GitHub. Do not copy their contents into this repository.

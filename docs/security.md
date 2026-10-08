@@ -13,3 +13,8 @@ Contributor activity is a transparent count, not a quality judgment. Exclude bot
 Original publishers control application terms. Summaries preserve attribution and direct visitors to the official page. Retrieval adapters should respect documented source access conditions and rate limits; uncertain access remains a research candidate until verified.
 
 The nonprofit mission does not establish legal charitable status or institutional endorsement. Pages must not invent endorsements, success statistics, scholarships awarded or employment outcomes. Testing provides evidence for the tested release, not a guarantee of zero defects or unlimited service.
+
+
+## Contact
+
+Use [GitHub Discussions](https://github.com/YouthOpp/youthopp.github.io/discussions) for general security questions and [GitHub Issues](https://github.com/YouthOpp/youthopp.github.io/issues) for non-sensitive reproducible problems. Do not publish vulnerabilities, credentials, personal data or other sensitive details. For private or sensitive security communication, email **contact@youthopps.org**.

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 const out=process.argv[2]||'dist';
-const catalog=JSON.parse(await fs.readFile(process.env.CATALOG_PATH||'data/catalog.json','utf8'));
+const catalog=JSON.parse(await fs.readFile(process.env.CATALOG_PATH||'data-source/catalog.json','utf8'));
 const report=JSON.parse(await fs.readFile(path.join(out,'build-report.json'),'utf8'));
 const records=catalog.opportunities.filter(r=>r.status!=='expired');
 if(report.records.length!==records.length||new Set(report.records.map(r=>r.id)).size!==records.length)throw Error('Build lost or duplicated catalog records');

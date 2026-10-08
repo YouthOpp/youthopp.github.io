@@ -1,4 +1,4 @@
-name: Sync data-source submodule
+name: check new data
 
 on:
   schedule:
@@ -9,22 +9,22 @@ permissions:
   contents: write
 
 concurrency:
-  group: sync-data-source
+  group: check-new-data
   cancel-in-progress: false
 
 jobs:
-  sync:
+  check:
     if: github.repository == 'YouthOpps/youthopps.github.io'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
-      - name: Update data-source submodule
+      - name: Check latest data-source commit
         run: |
           set -euo pipefail
           git submodule update --init --remote data-source
-      - name: Commit changed submodule pointer
+      - name: Commit updated submodule cursor
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"

@@ -1,0 +1,42 @@
+name: Sync data-source submodule
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-data-source
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'YouthOpps/youthopps.github.io'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Update data-source submodule
+        run: |
+          set -euo pipefail
+          if [ ! -f .gitmodules ] || ! grep -q 'path = data-source' .gitmodules; then
+            git submodule add -b main https://github.com/YouthOpps/data-source.git data-source
+          else
+            git submodule update --init --remote data-source
+          fi
+      - name: Commit changed submodule pointer
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .gitmodules data-source
+          if git diff --cached --quiet; then
+            echo "No data-source changes"
+            exit 0
+          fi
+          git commit -m "data: sync data-source submodule"
+          git push origin HEAD:main

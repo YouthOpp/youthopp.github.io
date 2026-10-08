@@ -19,14 +19,11 @@ jobs:
           node-version: '22'
       - name: Test static generation
         run: npm test
-      - name: Download pinned data-source catalog
-        if: github.event_name != 'pull_request'
-        env:
-          DATA_REPOSITORY: YouthOpps/data-source
-        run: node scripts/download-catalog.mjs
+      - name: Checkout data-source submodule
+        run: git submodule update --init --recursive
       - name: Build production catalog
         env:
-          CATALOG_PATH: data/catalog.json
+          CATALOG_PATH: data-source/catalog.json
           REQUIRE_CATALOG: ${{ github.event_name == 'pull_request' && '0' || '1' }}
         run: npm run build
       - name: Verify rendered catalog and country collections

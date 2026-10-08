@@ -18,7 +18,7 @@ Output: `dist/`. Without catalog data development builds show an honest empty st
 
 Configure `site.config.json` for canonical domain, webmaster verification and optional consent-gated analytics. Documentation in `docs/*.md` is published at `/docs/`. Build-time pagination keeps catalog data out of browser downloads.
 
-Original project repositories: [YouthOpp/youthopp.github.io](https://github.com/YouthOpp/youthopp.github.io), [YouthOpp/data-pipeline](https://github.com/YouthOpp/data-pipeline), and [YouthOpp/.github](https://github.com/YouthOpp/.github). Production collection and publication use these original YouthOpp repositories. Development forks are only contribution branches and historical test evidence.
+Original project repositories: [YouthOpps/youthopps.github.io](https://github.com/YouthOpps/youthopps.github.io), [YouthOpps/data-pipeline](https://github.com/YouthOpps/data-pipeline), and [YouthOpps/.github](https://github.com/YouthOpps/.github). Production collection and publication use these original YouthOpp repositories. Development forks are only contribution branches and historical test evidence.
 
 Production address: https://youthopps.org. Configure branding, canonical metadata, analytics and verification centrally in `site.config.json`; see [Website settings](docs/site-settings.md) for the exact fields and domain setup.
 
@@ -28,4 +28,4 @@ Pipeline technical documentation is maintained in this repository’s `docs/` an
 
 ## Contact and support
 
-For questions, proposals and project support, use [GitHub Discussions](https://github.com/YouthOpp/youthopp.github.io/discussions) first. For reproducible bugs, data problems or concrete work items, open a [GitHub Issue](https://github.com/YouthOpp/youthopp.github.io/issues). Email **contact@youthopps.org** when GitHub is unsuitable, especially for private or sensitive communication.
+For questions, proposals and project support, use [GitHub Discussions](https://github.com/YouthOpps/youthopps.github.io/discussions) first. For reproducible bugs, data problems or concrete work items, open a [GitHub Issue](https://github.com/YouthOpps/youthopps.github.io/issues). Email **contact@youthopps.org** when GitHub is unsuitable, especially for private or sensitive communication.

@@ -103,7 +103,7 @@ test('additive v1 taxonomy supplies category labels without removing existing ro
   const home=await fs.readFile(path.join(dir,'out/index.html'),'utf8');
   assert.ok(home.includes('Work placements'));
   assert.ok(home.indexOf('Work placements')<home.indexOf('Study funding'));
-  assert.ok(home.includes('Search and country filter apply to the latest listings'));
+  assert.ok(home.includes('Search filters the visible page. Country opens its full collection.'));
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });
 
@@ -213,13 +213,13 @@ test('source removal guidance is routed from every footer and the documentation 
  try{
   const result=await build({out:dir,config:{url:'https://example.org/project/'}});
   assert.ok(result.routes.includes('/docs/source-removal/'));
-  const footerText='To request removal of a source or indexed link, open an issue or submit a pull request.';
+  const footerText='Request source removal';
   for(const route of ['index.html','sources/index.html','docs/privacy/index.html','docs/source-removal/index.html']){
    const html=await fs.readFile(path.join(dir,route),'utf8');
    assert.ok(html.includes(`<a href="/project/docs/source-removal/">${footerText}</a>`),route);
    assert.equal((html.match(new RegExp(footerText.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length,1,route);
-   assert.ok(html.includes('independent search index of factual titles and links'),route);
-   assert.ok(html.includes('Indexing does not imply publisher endorsement'),route);
+   assert.ok(html.includes('Independent index of factual links'),route);
+   assert.ok(html.includes('No publisher endorsement'),route);
   }
   const docs=await fs.readFile(path.join(dir,'docs/index.html'),'utf8');
   assert.ok(docs.includes('href="/project/docs/source-removal/"'));

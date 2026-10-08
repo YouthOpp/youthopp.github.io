@@ -19,10 +19,10 @@ jobs:
           node-version: '22'
       - name: Test static generation
         run: npm test
-      - name: Download versioned pipeline release
+      - name: Download pinned data-source catalog
         if: github.event_name != 'pull_request'
         env:
-          DATA_REPOSITORY: YouthOpps/data-pipeline
+          DATA_REPOSITORY: YouthOpps/data-source
         run: node scripts/download-catalog.mjs
       - name: Build production catalog
         env:

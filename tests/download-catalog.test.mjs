@@ -78,3 +78,18 @@ test('missing or corrupt contributors prevents replacement of either verified sn
   assert.equal(await fs.readFile(out,'utf8'),'previous catalog');assert.equal(await fs.readFile(contributorsOut,'utf8'),'previous contributors');
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });
+
+test('pinned data-source catalog preserves country/category records',async()=>{
+ const dir=await fs.mkdtemp(path.join(os.tmpdir(),'youthopp-source-download-'));
+ const pointer=path.join(dir,'pointer.json'),out=path.join(dir,'catalog.json');
+ const commit='a'.repeat(40);
+ const data=JSON.stringify({schema_version:1,opportunities:[],sources:[],source_registry:[]});
+ const original=globalThis.fetch;
+ try{
+  await fs.writeFile(pointer,JSON.stringify({schema_version:2,repository:'YouthOpps/data-source',commit_sha:commit}));
+  globalThis.fetch=async url=>{assert.match(url,/\/YouthOpps\/data-source\/a{40}\/catalog.json$/);return new Response(data);};
+  await downloadCatalog({repository:'YouthOpps/data-source',pointer,out});
+  assert.equal(await fs.readFile(out,'utf8'),data);
+  assert.equal(JSON.parse(await fs.readFile(path.join(dir,'contributors.json'),'utf8')).status,'partial');
+ }finally{globalThis.fetch=original;await fs.rm(dir,{recursive:true,force:true});}
+});

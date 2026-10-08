@@ -25,6 +25,23 @@ export function verifyCatalog(bytes,manifest,assetName='catalog.json'){
  if(createHash('sha256').update(bytes).digest('hex')!==asset.sha256)throw new Error('Catalog SHA-256 mismatch');
  return asset;
 }
+export async function downloadSourceSnapshot({repository,commit,out,contributorsOut,request=fetch}){
+ if(repository!=='YouthOpps/data-source'||!/^[a-f0-9]{40}$/.test(commit))throw Error('Invalid pinned data-source revision');
+ const response=await request(`https://raw.githubusercontent.com/${repository}/${commit}/catalog.json`,{signal:AbortSignal.timeout(60000)});
+ if(!response.ok)throw Error(`Pinned data-source catalog unavailable (HTTP ${response.status})`);
+ const bytes=Buffer.from(await response.arrayBuffer());
+ if(bytes.length>15000000)throw Error('Source catalog exceeds size limit');
+ const catalog=JSON.parse(bytes);
+ if(catalog.schema_version!==1||!Array.isArray(catalog.opportunities)||!Array.isArray(catalog.sources)||!Array.isArray(catalog.source_registry))throw Error('Invalid data-source catalog');
+ const contributors={generated_at:new Date().toISOString(),status:'partial',contributors:[]};
+ validateContributorData(contributors);
+ await fs.mkdir(path.dirname(out),{recursive:true});
+ await fs.mkdir(path.dirname(contributorsOut),{recursive:true});
+ await fs.writeFile(out,bytes);
+ await fs.writeFile(contributorsOut,JSON.stringify(contributors));
+ return {commit,bytes:bytes.length};
+}
+
 export async function downloadCatalog({repository=process.env.DATA_REPOSITORY||'YouthOpps/data-pipeline',out='data/catalog.json',contributorsOut=path.join(path.dirname(out),'contributors.json'),pointer=path.join(path.dirname(fileURLToPath(import.meta.url)),'../catalog-release.json'),download}={}){
  if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw new Error('Invalid data repository');
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'youthopp-release-'));
@@ -32,6 +49,12 @@ export async function downloadCatalog({repository=process.env.DATA_REPOSITORY||'
  try{
   let releasePointer;
   try{releasePointer=JSON.parse(await fs.readFile(pointer,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;}
+  if(releasePointer?.schema_version===2){
+   if(releasePointer.repository!=='YouthOpps/data-source'||!/^[a-f0-9]{40}$/.test(releasePointer.commit_sha||''))throw Error('Invalid pinned data-source pointer');
+   return await downloadSourceSnapshot({repository:releasePointer.repository,commit:releasePointer.commit_sha,out,contributorsOut});
+  }
+  // Continue serving the last verified release until the first source commit.
+  if(releasePointer?.schema_version===1&&repository==='YouthOpps/data-source')repository=releasePointer.repository;
   if(releasePointer&&(releasePointer.schema_version!==1||releasePointer.repository!==repository||!/^catalog-\d+-\d+$/.test(releasePointer.release_tag)||!/^[a-f0-9]{64}$/.test(releasePointer.manifest_sha256)))throw new Error('Invalid catalog release pointer');
   await fetchAsset(releasePointer?.release_tag||'catalog-latest','manifest.json',dir);
   const manifestBytes=await fs.readFile(path.join(dir,'manifest.json'));

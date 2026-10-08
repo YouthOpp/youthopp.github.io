@@ -1,3 +1,5 @@
+<img src="assets/youthopp-icon-v1.png" width="80" height="80" alt="YouthOpp logo">
+
 # YouthOpp website
 
 An English-language static opportunity catalog for nonprofit public benefit. Source titles preserve original language. Built using AI agents under human maintainer direction.
@@ -21,3 +23,4 @@ Original project repositories: [YouthOpp/youthopp.github.io](https://github.com/
 Production address: https://youthopps.org. Configure branding, canonical metadata, analytics and verification centrally in `site.config.json`; see [Website settings](docs/site-settings.md) for the exact fields and domain setup.
 
 Pipeline technical documentation is maintained in this repository’s `docs/` and published under [Website Docs](https://youthopps.org/docs/). Start with [Pipeline architecture](https://youthopps.org/docs/architecture/), [Adapter guide](https://youthopps.org/docs/pipeline-adapters/) and [Pipeline operations](https://youthopps.org/docs/pipeline-operations/).
+

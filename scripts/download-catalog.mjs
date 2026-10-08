@@ -25,7 +25,7 @@ export function verifyCatalog(bytes,manifest,assetName='catalog.json'){
  if(createHash('sha256').update(bytes).digest('hex')!==asset.sha256)throw new Error('Catalog SHA-256 mismatch');
  return asset;
 }
-export async function downloadCatalog({repository=process.env.DATA_REPOSITORY||'YouthOpp/data-pipeline',out='data/catalog.json',contributorsOut=path.join(path.dirname(out),'contributors.json'),pointer=path.join(path.dirname(fileURLToPath(import.meta.url)),'../catalog-release.json'),download}={}){
+export async function downloadCatalog({repository=process.env.DATA_REPOSITORY||'YouthOpps/data-pipeline',out='data/catalog.json',contributorsOut=path.join(path.dirname(out),'contributors.json'),pointer=path.join(path.dirname(fileURLToPath(import.meta.url)),'../catalog-release.json'),download}={}){
  if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw new Error('Invalid data repository');
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'youthopp-release-'));
  const fetchAsset=download||((tag,asset,dest)=>downloadReleaseAsset(repository,tag,asset,dest));

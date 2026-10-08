@@ -24,3 +24,8 @@ Production address: https://youthopps.org. Configure branding, canonical metadat
 
 Pipeline technical documentation is maintained in this repository’s `docs/` and published under [Website Docs](https://youthopps.org/docs/). Start with [Pipeline architecture](https://youthopps.org/docs/architecture/), [Adapter guide](https://youthopps.org/docs/pipeline-adapters/) and [Pipeline operations](https://youthopps.org/docs/pipeline-operations/).
 
+
+
+## Contact and support
+
+For questions, proposals and project support, use [GitHub Discussions](https://github.com/YouthOpp/youthopp.github.io/discussions) first. For reproducible bugs, data problems or concrete work items, open a [GitHub Issue](https://github.com/YouthOpp/youthopp.github.io/issues). Email **contact@youthopps.org** when GitHub is unsuitable, especially for private or sensitive communication.

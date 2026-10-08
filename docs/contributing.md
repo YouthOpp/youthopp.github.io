@@ -8,6 +8,10 @@ Help a young person find an opportunity while building evidence of your own skil
 - Improve accessibility, source metadata, documentation or data quality.
 - Test the catalog and explain a reproducible problem.
 
+## Communication first
+
+Use [GitHub Discussions](https://github.com/YouthOpp/youthopp.github.io/discussions) first for questions, ideas and general project conversation. Use [GitHub Issues](https://github.com/YouthOpp/youthopp.github.io/issues) for reproducible bugs, data corrections and concrete work. Email **contact@youthopps.org** only when GitHub is unsuitable, especially for private or sensitive communication.
+
 ## Work in public
 
 Open an issue with the problem, acceptance criteria and source references. Work on a dedicated branch. Include tests and a concise pull request summary. Maintainers review contributions before merge.

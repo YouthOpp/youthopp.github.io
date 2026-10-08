@@ -23,11 +23,7 @@ jobs:
       - name: Update data-source submodule
         run: |
           set -euo pipefail
-          if [ ! -f .gitmodules ] || ! grep -q 'path = data-source' .gitmodules; then
-            git submodule add -b main https://github.com/YouthOpps/data-source.git data-source
-          else
-            git submodule update --init --remote data-source
-          fi
+          git submodule update --init --remote data-source
       - name: Commit changed submodule pointer
         run: |
           set -euo pipefail

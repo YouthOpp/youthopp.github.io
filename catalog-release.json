@@ -1,6 +1,5 @@
 {
-  "schema_version": 1,
-  "repository": "YouthOpps/data-pipeline",
-  "release_tag": "catalog-37751580703-1",
-  "manifest_sha256": "c1fadc7cab86af4d68e1b8dd448d9a733d620f01e0576b32c7d2cff1f50d3fb3"
+  "schema_version": 2,
+  "repository": "YouthOpps/data-source",
+  "commit_sha": "aff5676a704df739c18b6c2a6eddb9fead9bcdc4"
 }

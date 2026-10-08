@@ -14,9 +14,9 @@ GitHub repositories hold code and source definitions; Actions runs collection an
 
 | Repository | Responsibility |
 | --- | --- |
-| [YouthOpp/data-pipeline](https://github.com/YouthOpp/data-pipeline) | Source registry, adapters, normalization, validation, collection, contributor history and dataset publication |
-| [YouthOpp/youthopp.github.io](https://github.com/YouthOpp/youthopp.github.io) | English interface, pre-rendered catalogs, documentation, contributor profiles, search metadata and Pages build |
-| [YouthOpp/.github](https://github.com/YouthOpp/.github) | Mission, contribution guidance, community governance and issue templates |
+| [YouthOpps/data-pipeline](https://github.com/YouthOpps/data-pipeline) | Source registry, adapters, normalization, validation, collection, contributor history and dataset publication |
+| [YouthOpps/youthopps.github.io](https://github.com/YouthOpps/youthopps.github.io) | English interface, pre-rendered catalogs, documentation, contributor profiles, search metadata and Pages build |
+| [YouthOpps/.github](https://github.com/YouthOpps/.github) | Mission, contribution guidance, community governance and issue templates |
 
 ## Delivery flow
 

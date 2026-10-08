@@ -12,7 +12,7 @@ Include:
 - The source URL or URLs to remove.
 - A reason, if you want to provide one.
 
-Do not include personal, confidential or sensitive information in a public issue or pull request. If the request concerns information of that kind, state only that public discussion is unsuitable and wait for a maintainer to provide an appropriate contact path.
+Do not include personal, confidential or sensitive information in a public issue or pull request. If the request concerns personal, confidential or sensitive information, do not post it publicly; email **contact@youthopps.org** instead. For non-sensitive questions before filing a request, use [GitHub Discussions](https://github.com/YouthOpp/youthopp.github.io/discussions).
 
 ## Pull request process
 

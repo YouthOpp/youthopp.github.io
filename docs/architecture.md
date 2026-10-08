@@ -1,44 +1,61 @@
-# Architecture
+# How it works
 
-YouthOpp is a nonprofit, community-maintained opportunity index. It lowers the effort of discovering scholarships, internships and related opportunities while directing readers to the original publisher. Publishers remain authoritative for eligibility, funding, deadlines and applications.
+Three projects move information from publishers to a static website. A separate AI workspace guides development.
 
-## AI-led development
+```flow
+caption: From a publisher to a reader
+Publisher | Original opportunity information
+data-pipeline | Collect and validate one source
+data-source | Store that source's JSON snapshot
+youthopps.org | Build pages and search indexes
+Cloudflare Pages | Serve the website to readers
+```
 
-The project idea, development and management use AI agents under human direction. Product, architecture, research, implementation and quality assurance decisions are documented openly. This is also a learning environment where students and recent graduates can build practical AI experience, demonstrate contributions and improve their visibility for scholarships, internships and first jobs. Participation does not guarantee any award or employment. Agents are roles, not separate GitHub identities; public automation is disclosed.
+## What lives where
 
-## Free baseline
+| Repository | Responsibility | Main files |
+| --- | --- | --- |
+| [data-pipeline](https://github.com/YouthOpps/data-pipeline) | Retrieve, validate and publish each source | `adapters/<source>/adapter.py`, `test_adapter.py`, one Action per adapter |
+| [data-source](https://github.com/YouthOpps/data-source) | Store published data; no collection code or Actions | `datas/<source>/data.json` and `metadata.json` |
+| [youthopps.org](https://github.com/YouthOpps/youthopps.github.io) | Present data, source information and these guides | `scripts/`, `assets/`, `docs/`, `site.config.json` |
+| [ai-workspace](https://github.com/YouthOpps/ai-workspace) | Coordinate development; not a fourth runtime service | `AGENTS.md`, `docs/WORKFLOW.md`, `skills/`, repository submodules |
 
-GitHub repositories hold code and source definitions; Actions runs collection and validation; release assets publish normalized data; Cloudflare Pages builds and hosts HTML, CSS and JavaScript. There is no runtime backend, database, mandatory paid API or inference service. Public hosting and automation have quotas and operational limits. The application remains useful without analytics and without browser JavaScript.
+## One source, two files
 
-## Repository responsibilities
+`data.json` holds the last successfully validated records. `metadata.json` identifies the source and reports status, explanation, attempt/success times, errors and available publisher information.
 
-| Repository | Responsibility |
+| Collection outcome | Published result |
 | --- | --- |
-| [YouthOpps/data-pipeline](https://github.com/YouthOpps/data-pipeline) | Source registry, adapters, normalization, validation, collection, contributor history and dataset publication |
-| [YouthOpps/youthopps.github.io](https://github.com/YouthOpps/youthopps.github.io) | English interface, pre-rendered catalogs, documentation, contributor profiles, search metadata and Pages build |
-| [YouthOpps/.github](https://github.com/YouthOpps/.github) | Mission, contribution guidance, community governance and issue templates |
+| Success | Replace that source's records and record `success` with a new success time |
+| Failure after a success | Keep last-good records and success time; record `fail` and a sanitized explanation |
+| First attempt fails | Do not create an empty published source |
 
-## Delivery flow
+Only authorized pipeline publication writes data-source; exceptional manual recovery belongs to administrators. Website development never edits published data.
 
-A trusted scheduled workflow collects enabled sources. It validates each result and preserves the last successful snapshot when a source fails. A consolidated catalog is published with a generation time and schema version. A website build selects one dataset version, generates category and country pagination plus detail pages, presents the pipeline-provided contributor snapshot and deploys only after validation succeeds.
+If publication or durable error reporting fails, the run fails explicitly; it must not claim a successful update. Previously published data remains available.
 
-Render lists in bounded pages rather than downloading the complete catalog into browsers. Country catalogs refer to the opportunity's host country; publisher country and eligible applicant countries remain separate. Unknown metadata must stay unknown. Full-text global search is outside the free baseline; on-page refinement must clearly identify its scope.
+## Automation
 
-## Trust model
+Each source Action runs only its own adapter with `--publish`. The configured OeAD, FEBA and Fulbright Germany Actions run every six hours; Opportunity Desk and NASA run manually. Live adapter tests do not publish and are not run by Actions.
 
-Every card provides the original source link, source identity and last successful collection time. A fetched page is not evidence that its application is open. Missing deadlines produce an unconfirmed status; passed deadlines produce expired status. Preserve source language and label it correctly. Never turn an AI inference into an authoritative eligibility condition.
+```flow
+caption: Refreshing youthopps.org is separate from source collection
+Every hour | youthopps.org checks data-source main
+Changed revision | Commit the new data submodule pointer
+Cloudflare Git build | Validate data and generate dist/
+Readers | Receive the successful deployment
+```
 
-## Contributor visibility
+If the data revision is unchanged, no refresh commit is made. Scheduled jobs can run late. A commit or passing local build is not proof of a live deployment. The workspace's own hourly pin refresh is development housekeeping, not website publication.
 
-The pipeline rebuilds profiles from the default-branch history of the original YouthOpp repository histories. Inherited upstream history is preserved; identical commit hashes are counted once across repositories. Author mapping uses paginated GitHub API requests and available public noreply identities. Award one point per attributable authored non-merge commit, excluding bots, automated dataset updates and messages beginning `Open AI agent:`. AI-prefixed work is excluded from scores rather than displayed as a separate ranking. Publish the formula, collection time, unresolved identities and partial-collection warnings. Scores reflect recorded activity, not capability or hiring suitability. The website only consumes the integrity-verified contributor snapshot from the same immutable pipeline release as the catalog; neither production website builds nor PR validation collect history.
+## What youthopps.org builds
 
-## Discovery
+Every build reads one selected `datas/` snapshot, validates it, and creates static pages and collection search indexes in `dist/`. Missing or malformed required input fails. No upstream aggregate catalog or application server is needed.
 
-Use meaningful HTML headings, canonical URLs, page descriptions, sitemaps, robots directives, OpenGraph/Twitter previews and accurate structured data. The current generator emits project Organization, WebSite, CollectionPage/WebPage and route BreadcrumbList structured data without claiming registered charitable status. Use JobPosting only for real job listings. Optional llms.txt helps discover documentation but does not promise AI search ranking. No marketing claims about scale or institutional support without evidence.
+Search and combined filters cover the whole selected collection before pagination. Publisher country, destination and applicant eligibility are separate. Deadlines sort earliest first, unknown last; expired records remain visible and turn grey through browser JavaScript. Date-only deadlines end at midnight after that UTC day. Static browsing works without JavaScript; search and live expiry need it.
 
-Production configuration targets the original YouthOpp repositories for collection, contributor history and deployment. Development forks remain contribution branches and dated test evidence. Successful historical fork runs do not establish that these original-repository PRs have been merged or that original production has been accepted.
+## Delivery
 
-## Documentation authority
+Cloudflare Pages uses Node.js 22, `npm run build`, output `dist`, and the website's `main` branch. `npm run check` runs tests, build and output verification; the website check Action runs it on PRs and main.
 
-Pipeline technical architecture, data contracts, adapter instructions and operations live in this website repository’s `docs/` and render under https://youthopps.org/docs/. The pipeline links to those pages rather than maintaining a second independently edited technical guide. Executable schemas, adapter fixtures, source manifests and datasets remain owned by the pipeline.
-
+The selected data-source revision must contain `datas/`. The local migrated data can be checked with `DATA_PATH`, but it must be published and pinned before production rollout. Live Cloudflare deployment has not been verified here.

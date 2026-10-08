@@ -77,7 +77,7 @@ if (/^G-[A-Z0-9]+$/.test(analyticsId || '')) {
   try { choice = localStorage.getItem('youthopp-analytics'); } catch {}
   if (choice === 'allow') enable();
   else if (choice !== 'deny') {
-    panel.innerHTML = `<p><a href="${basePath}/docs/privacy/">Privacy details</a></p><button type="button" data-choice="deny">Decline</button><button type="button" data-choice="allow">Allow analytics</button>`;
+    panel.innerHTML = `<p><a href="${basePath}/docs/trust/">Privacy details</a></p><button type="button" data-choice="deny">Decline</button><button type="button" data-choice="allow">Allow analytics</button>`;
     panel.querySelector('p').prepend(document.createTextNode(`Allow optional Google Analytics to help improve ${siteName}? `));
     panel.addEventListener('click', event => {
       const selected = event.target.dataset.choice;

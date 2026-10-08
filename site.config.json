@@ -5,22 +5,19 @@
   "pageSize": 30,
   "googleVerification": "",
   "bingVerification": "",
-  "googleAnalyticsId": "G-MGW77TH5Z3",
+  "googleAnalyticsId": "",
   "tagline": "More opportunity. Less searching.",
   "brandCaption": "Open opportunity index",
   "mission": "Nonprofit purpose. Open source. Built with AI, shaped by people.",
   "organizationDescription": "An independent open-source opportunity discovery project with a nonprofit purpose.",
   "repositoryUrl": "https://github.com/YouthOpps/youthopps.github.io",
+  "organizationUrl": "https://github.com/YouthOpps",
   "logoPath": "/assets/youthopp-icon-v1.png",
   "socialImagePath": "/assets/social-preview.png",
   "navigation": [
     [
       "/opportunities/",
       "Explore"
-    ],
-    [
-      "/opportunities/countries/",
-      "Countries"
     ],
     [
       "/sources/",
@@ -45,7 +42,7 @@
       "Contribute"
     ],
     [
-      "/docs/privacy/",
+      "/docs/trust/",
       "Privacy & source policy"
     ],
     [

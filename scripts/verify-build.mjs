@@ -1,13 +1,14 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {loadData} from './data.mjs';
 const out=process.argv[2]||'dist';
-const catalog=JSON.parse(await fs.readFile(process.env.CATALOG_PATH||'data-source/catalog.json','utf8'));
+const catalog=await loadData(process.env.DATA_PATH||'data-source/datas');
 const report=JSON.parse(await fs.readFile(path.join(out,'build-report.json'),'utf8'));
-const records=catalog.opportunities.filter(r=>r.status!=='expired');
+const records=catalog.opportunities;
 if(report.records.length!==records.length||new Set(report.records.map(r=>r.id)).size!==records.length)throw Error('Build lost or duplicated catalog records');
 for(const record of records){
  if(!report.records.some(r=>r.id===record.id))throw Error('Missing rendered record');
- const html=await fs.readFile(path.join(out,'opportunity',record.id,'index.html'),'utf8');
+ const html=await fs.readFile(path.join(out,'opportunity',record.id.toLowerCase(),'index.html'),'utf8');
  if(!html.includes('row-title')&&!html.includes('page-title'))throw Error('Empty opportunity detail');
 }
 for(const route of report.routes)await fs.access(path.join(out,route,'index.html'));

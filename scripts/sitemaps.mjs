@@ -11,7 +11,7 @@ export async function writeSitemaps({out,siteUrl,routes,records}){
  const groups=new Map();
  const detailRoutes=new Set();
  for(const record of records){
-  const route=`/opportunity/${record.id}/`;
+  const route=`/opportunity/${record.id.toLowerCase()}/`;
   if(!available.has(route))throw Error('Sitemap record has no generated detail page');
   const source=String(record.source||'unknown');
   if(!groups.has(source))groups.set(source,[]);

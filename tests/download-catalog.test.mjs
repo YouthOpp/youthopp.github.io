@@ -12,7 +12,7 @@ test('committed release pointer pins its manifest and protects existing output o
  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'youthopp-pinned-download-'));const out=path.join(dir,'catalog.json');const pointer=path.join(dir,'pointer.json');
  const manifestBytes=Buffer.from(JSON.stringify(manifest));const calls=[];
  try{
-  await fs.writeFile(pointer,JSON.stringify({schema_version:1,repository:'YouthOpp/data-pipeline',release_tag:manifest.release_tag,manifest_sha256:createHash('sha256').update(manifestBytes).digest('hex')}));
+  await fs.writeFile(pointer,JSON.stringify({schema_version:1,repository:'YouthOpps/data-pipeline',release_tag:manifest.release_tag,manifest_sha256:createHash('sha256').update(manifestBytes).digest('hex')}));
   const download=async(tag,asset,dest)=>{calls.push(tag);await fs.writeFile(path.join(dest,asset),asset==='manifest.json'?manifestBytes:asset==='contributors.json'?contributorBytes:bytes);};
   await downloadCatalog({out,pointer,download});
   assert.deepEqual(calls,[manifest.release_tag,manifest.release_tag,manifest.release_tag]);
@@ -32,9 +32,9 @@ test('public release downloads need no CLI or token and pin both assets to the m
  try{
   await downloadCatalog({out:path.join(dir,'catalog.json'),pointer:path.join(dir,'missing-pointer.json')});
   assert.deepEqual(calls.map(([url])=>url),[
-   'https://github.com/YouthOpp/data-pipeline/releases/download/catalog-latest/manifest.json',
-   'https://github.com/YouthOpp/data-pipeline/releases/download/catalog-123-2/catalog.json',
-   'https://github.com/YouthOpp/data-pipeline/releases/download/catalog-123-2/contributors.json'
+   'https://github.com/YouthOpps/data-pipeline/releases/download/catalog-latest/manifest.json',
+   'https://github.com/YouthOpps/data-pipeline/releases/download/catalog-123-2/catalog.json',
+   'https://github.com/YouthOpps/data-pipeline/releases/download/catalog-123-2/contributors.json'
   ]);
   assert.ok(calls.every(([,options])=>!options.headers&&options.signal));
   fetchMock.mock.mockImplementation(async()=>new Response('not found',{status:404}));

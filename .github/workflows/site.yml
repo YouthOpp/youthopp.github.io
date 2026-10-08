@@ -22,7 +22,7 @@ jobs:
       - name: Download versioned pipeline release
         if: github.event_name != 'pull_request'
         env:
-          DATA_REPOSITORY: YouthOpp/data-pipeline
+          DATA_REPOSITORY: YouthOpps/data-pipeline
         run: node scripts/download-catalog.mjs
       - name: Build production catalog
         env:

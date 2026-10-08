@@ -36,14 +36,14 @@ test('manual source review never appears as a successful automated collection',a
   ]}));
   await build({input,out});
   const html=await fs.readFile(path.join(out,'sources/index.html'),'utf8');
-  const cards=[...html.matchAll(/<article class="source-card">([\s\S]*?)<\/article>/g)].map(m=>m[1]);
+  const cards=[...html.matchAll(/<article class="source-card publisher-card">([\s\S]*?)<\/article>/g)].map(m=>m[1]);
   const candidate=cards.find(card=>card.includes('<h2>Recent manual candidate</h2>'));
-  assert.ok(candidate.includes('Source status: not_connected · Last collection success: Not provided'));
-  assert.ok(candidate.includes('Last reviewed/checked: 2026-10-04'));
-  assert.ok(!candidate.includes('Last collection success: 2026-10-04'));
+  assert.ok(candidate.includes('In development'));assert.ok(candidate.includes('No successful collection yet'));
+  assert.ok(!candidate.includes('2026-10-04 18:00 UTC'));
+  assert.ok(!candidate.includes('source-status active'));
   const connected=cards.find(card=>card.includes('<h2>Connected source fixture</h2>'));
-  assert.ok(connected.includes('Last collection success: 2026-10-03'));
-  assert.ok(connected.includes('Last reviewed/checked: 2026-10-04'));
+  assert.ok(connected.includes('2026-10-03 18:00 UTC'));assert.ok(connected.includes('source-status active'));
+  assert.ok(!connected.includes('2026-10-04 18:00 UTC'));
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });
 
@@ -113,9 +113,9 @@ test('embedded source registry is authoritative and keeps runtime health separat
   await fs.writeFile(input,JSON.stringify({schema_version:1,opportunities:[],sources:[{source:'adapter-one',name:'Runtime publisher',website_url:'https://example.org/',status:'error',last_success_at:null,error:'Collection failed'}],source_registry:[{id:'review-one',adapter_source_id:'adapter-one',name:'Research publisher',url:'https://example.org/',publisher_country:'DE',categories:['internships'],verified_at:'2026-10-05',acquisition_state:'not_connected',rights_review_status:'pending'}]}));
   await build({input,out:path.join(dir,'out')});
   const html=await fs.readFile(path.join(dir,'out/sources/index.html'),'utf8');
-  assert.equal((html.match(/<article class="source-card">/g)||[]).length,1);
-  assert.ok(html.includes('Source status: error · Last collection success: Not provided'));
-  assert.ok(html.includes('Germany'));assert.ok(html.includes('Content: Internships'));
+  assert.equal((html.match(/<article class="source-card publisher-card">/g)||[]).length,1);
+  assert.ok(html.includes('Access issue'));assert.ok(html.includes('No successful collection yet'));
+  assert.ok(html.includes('Germany'));assert.ok(html.includes('Internships from this publisher.'));
   assert.ok(!html.includes('grants.at'));
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });

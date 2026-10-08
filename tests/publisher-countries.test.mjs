@@ -20,7 +20,7 @@ test('publisher country pages include failed sources without inferring opportuni
   assert.ok(!result.routes.includes('/countries/de/'));
   const german=await fs.readFile(path.join(out,'sources/countries/de/index.html'),'utf8');
   assert.ok(german.includes('<h2>German publisher</h2>'));assert.ok(!german.includes('<h2>French publisher</h2>'));
-  assert.ok(german.includes('Latest collection error: Fetch failed'));
+  assert.ok(german.includes('Access issue'));assert.ok(german.includes('The latest collection failed.'));assert.ok(!german.includes('Fetch failed'));
   assert.ok(german.includes('href="/project/sources/countries/fr/"'));
   const global=await fs.readFile(path.join(out,'sources/countries/international/index.html'),'utf8');assert.ok(global.includes('<h2>Global publisher</h2>'));
   const opportunity=await fs.readFile(path.join(out,'opportunity/record/index.html'),'utf8');assert.ok(opportunity.includes('<dt>Destination</dt><dd>Not provided</dd>'));

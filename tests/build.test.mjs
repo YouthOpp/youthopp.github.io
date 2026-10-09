@@ -182,13 +182,15 @@ test('publisher attribution is escaped wherever source titles appear without inv
   for (const html of listings) {
     const creditedRow = (html.match(/<tr class="opportunity"[^>]*>[\s\S]*?<\/tr>/g) || [])
         .find(row => row.includes('/opportunity/credited-record/'));
-    assert.ok(creditedRow.includes('<a class="row-source" href="/sources/publisher/credited/">example.org / © OeAD &lt;script&gt;alert(1)&lt;/script&gt;</a>'));
+    assert.ok(creditedRow.includes('<a class="row-source" href="/sources/publisher/credited/">© OeAD &lt;script&gt;alert(1)&lt;/script&gt;</a>'));
+    assert.ok(!creditedRow.includes('row-source-country'));
+    assert.ok(creditedRow.includes('class="row-source-website" href="https://example.org/credited"'));
     assert.ok(!creditedRow.includes('Source attribution:'));
     assert.ok(!creditedRow.includes('source-attribution'));
     assert.ok(!creditedRow.includes('<script>alert(1)</script>'));
     const ordinaryRow = (html.match(/<tr class="opportunity"[^>]*>[\s\S]*?<\/tr>/g) || [])
         .find(row => row.includes('/opportunity/ordinary-record/'));
-    assert.ok(ordinaryRow.includes('href="/sources/publisher/ordinary/">example.org</a>'));
+    assert.ok(ordinaryRow.includes('href="/sources/publisher/ordinary/">Institution not provided</a>'));
   }
   const listing = listings[1];
   const indexPath = listing.match(/data-index="([^"]+)"/)[1];

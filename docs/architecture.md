@@ -52,7 +52,7 @@ If the data revision is unchanged, no refresh commit is made. Scheduled jobs can
 
 Every build reads one selected `datas/` snapshot, validates it, and creates static pages and collection search indexes in `dist/`. Missing or malformed required input fails. No upstream aggregate catalog or application server is needed.
 
-Search and combined filters cover the whole selected collection before pagination. Publisher country, destination and applicant eligibility are separate. Deadlines sort earliest first, unknown last; expired records remain visible and turn grey through browser JavaScript. Date-only deadlines end at midnight after that UTC day. Static browsing works without JavaScript; search and live expiry need it.
+Search and combined filters cover the whole selected collection before pagination. Publisher country, destination and applicant eligibility are separate. Unexpired dated records sort by nearest deadline first, followed by unknown deadlines, then expired records in deadline order. Equal deadlines use record IDs for stable ties. Build output and browser search use the same ordering before pagination; the homepage preview also refreshes from the full collection. Expiry and ordering refresh on load, every 30 seconds and when returning to the tab. Expired records remain visible and turn grey through browser JavaScript. Date-only deadlines end at midnight after that UTC day. Static browsing works without JavaScript; search and live expiry need it.
 
 ## Delivery
 

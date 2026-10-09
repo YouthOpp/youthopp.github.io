@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import {loadData,deadlineTime,publicMetadata} from '../scripts/data.mjs';
+import {loadData,deadlineTime,publicMetadata,compareDeadlines} from '../scripts/data.mjs';
 const record = overrides => ({id:'record-1',title:'Original title',summary:'Short description',url:'https://example.org/apply',category:'training',status:'expired',host_countries:['TR'],eligible_countries:[],deadline:'2025-01-01',...overrides});
 async function fixture(t, records=[record()], metadata={status:'fail',title:'Source title',error:'Failed',last_success_at:'2025-01-01'}) {
  const root=await fs.mkdtemp(path.join(os.tmpdir(),'website-data-'));
@@ -16,7 +16,7 @@ async function fixture(t, records=[record()], metadata={status:'fail',title:'Sou
 test('failed sources retain last-good and expired records with authoritative folder identity',async t=>{
  const root=await fixture(t,[record({source:'wrong'}),record({id:'unknown',deadline:null}),record({id:'earlier',deadline:'2024-01-01'})]);
  const result=await loadData(root);
- assert.deepEqual(result.opportunities.map(r=>r.id),['earlier','record-1','unknown']);
+ assert.deepEqual(result.opportunities.map(r=>r.id),['unknown','earlier','record-1']);
  assert.equal(result.opportunities[0].source,'example-source');
  assert.equal(result.sources[0].name,'Source title');
  assert.equal(result.sources[0].status,'fail');
@@ -65,4 +65,20 @@ test('invalid calendar dates and ambiguous timestamps fail rather than shift dea
  await fs.writeFile(path.join(root,'example-source','data.json'),'[]');
  await fs.writeFile(path.join(root,'example-source','metadata.json'),JSON.stringify({status:'success',last_success_at:'2026-02-30'}));
  await assert.rejects(loadData(root),/Invalid source metadata date/);
+});
+
+
+test('build ordering respects UTC end-of-day and explicit timestamp zones', () => {
+  const now = Date.parse('2026-10-09T12:00:00Z');
+  const records = [
+    record({id: 'past', deadline: '2026-10-08'}),
+    record({id: 'today', deadline: '2026-10-09'}),
+    record({id: 'near', deadline: '2026-10-09T15:00:00+02:00'}),
+    record({id: 'unknown', deadline: null}),
+  ];
+  const sorted = time => [...records].sort((a, b) =>
+    compareDeadlines(a, b, time)).map(item => item.id);
+  assert.deepEqual(sorted(now), ['near', 'today', 'unknown', 'past']);
+  assert.deepEqual(sorted(Date.parse('2026-10-10T00:00:00Z')),
+      ['unknown', 'past', 'near', 'today']);
 });

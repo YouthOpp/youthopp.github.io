@@ -239,9 +239,22 @@ test('deadline order retains expired records and collection indexes include late
   const input=await writeSources(path.join(dir,'datas'),{opportunities});const out=path.join(dir,'site');
   await build({input,out,config:{url:'https://example.org/project/'}});
   const html=await fs.readFile(path.join(out,'opportunities/index.html'),'utf8');
-  assert.ok(html.includes('data-deadline='));assert.ok(html.includes('Expired deadline'));
+  assert.ok(html.includes('data-deadline='));assert.ok(!html.includes('Expired deadline'));
+  const lastPage = await fs.readFile(path.join(out,'opportunities/page/2/index.html'),'utf8');
+  assert.ok(lastPage.indexOf('Unknown deadline') < lastPage.indexOf('Expired deadline'));
   const index=JSON.parse(await fs.readFile(path.join(out,html.match(/data-index="([^"]+)"/)[1].replace('/project/','')),'utf8'));
-  assert.equal(index.length,34);assert.ok(index[0].html.includes('Expired deadline'));assert.ok(index.at(-1).html.includes('Unknown deadline'));
+  assert.equal(index.length,34);assert.ok(index[0].html.includes('Searchable'));assert.ok(index.at(-2).html.includes('Unknown deadline'));assert.ok(index.at(-1).html.includes('Expired deadline'));
+  assert.equal(index.at(-1).deadline,Date.parse('2000-01-01T23:59:59.999Z'));
+  assert.equal(index.at(-2).deadline,null);
+  const home = await fs.readFile(path.join(out, 'index.html'), 'utf8');
+  assert.ok(home.includes('data-preview-index='));
+  assert.ok(!home.includes('Expired deadline'));
+  const scriptName = home.match(/src="\/project\/assets\/(index\.[a-f0-9]{16}\.js)"/)[1];
+  const script = await fs.readFile(path.join(out, 'assets', scriptName), 'utf8');
+  const discoveryName = script.match(/'\.\/(discovery\.[a-f0-9]{16}\.js)'/)[1];
+  assert.ok((await fs.readFile(path.join(out, 'assets', discoveryName), 'utf8'))
+      .includes('export function sortOpportunities'));
+
   assert.ok(index.some(item=>item.search.includes('Searchable 30')));assert.ok(index.every(item=>item.html.includes('/project/opportunity/')));
   assert.deepEqual(index[0].destination,['DE']);assert.deepEqual(index[0].eligible,['FR']);
  }finally{await fs.rm(dir,{recursive:true,force:true});}

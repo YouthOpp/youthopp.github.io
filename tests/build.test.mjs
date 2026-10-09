@@ -60,11 +60,11 @@ test('failed source without last-good collection remains distinct from successfu
   await build({input,out});
   const html=await fs.readFile(path.join(out,'sources/index.html'),'utf8');
   const cards=[...html.matchAll(/<article class="source-card publisher-card">([\s\S]*?)<\/article>/g)].map(m=>m[1]);
-  const candidate=cards.find(card=>card.includes('<h2>Recent manual candidate</h2>'));
+  const candidate=cards.find(card=>card.includes('href="/sources/publisher/manual-fixture/"'));
   assert.ok(candidate.includes('fail'));assert.ok(candidate.includes('No successful collection yet'));
   assert.ok(candidate.includes('2026-10-04T18:00:00Z'));
   assert.ok(!candidate.includes('source-status active'));
-  const connected=cards.find(card=>card.includes('<h2>Connected source fixture</h2>'));
+  const connected=cards.find(card=>card.includes('href="/sources/publisher/connected-fixture/"'));
   assert.ok(connected.includes('2026-10-03 18:00 UTC'));assert.ok(connected.includes('source-status active'));
   assert.ok(connected.includes('2026-10-04T18:00:00Z'));
  }finally{await fs.rm(dir,{recursive:true,force:true});}
@@ -110,7 +110,7 @@ test('source directory uses per-folder metadata without additional registry inpu
   const html=await fs.readFile(path.join(dir,'out/sources/index.html'),'utf8');
   assert.equal((html.match(/<article class="source-card publisher-card">/g)||[]).length,1);
   assert.ok(html.includes('fail'));assert.ok(html.includes('No successful collection yet'));
-  assert.ok(html.includes('Runtime publisher'));assert.ok(html.includes('Collection failed'));assert.ok(!html.includes('grants.at'));
+  assert.ok(html.includes('<h2>example.org</h2>'));assert.ok(html.includes('Collection failed'));assert.ok(!html.includes('grants.at'));
   assert.ok(!html.includes('grants.at'));
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });
@@ -178,7 +178,23 @@ test('publisher attribution is escaped wherever source titles appear without inv
   await build({input,out});const sources=await fs.readFile(path.join(out,'sources/index.html'),'utf8');const detail=await fs.readFile(path.join(out,'opportunity/credited-record/index.html'),'utf8');
   const listingRoutes=['index.html','opportunities/index.html','opportunities/scholarships/index.html','countries/unknown/index.html','opportunities/scholarships/unknown/index.html'];
   const listings=await Promise.all(listingRoutes.map(route=>fs.readFile(path.join(out,route),'utf8')));
-  for(const html of [sources,detail,...listings]){assert.ok(html.includes('Source attribution: © OeAD &lt;script&gt;alert(1)&lt;/script&gt;'));assert.ok(!html.includes('<script>alert(1)</script>'));}
+  for(const html of [sources,detail]){assert.ok(html.includes('Source attribution: © OeAD &lt;script&gt;alert(1)&lt;/script&gt;'));assert.ok(!html.includes('<script>alert(1)</script>'));}
+  for (const html of listings) {
+    const creditedRow = (html.match(/<tr class="opportunity"[^>]*>[\s\S]*?<\/tr>/g) || [])
+        .find(row => row.includes('/opportunity/credited-record/'));
+    assert.ok(creditedRow.includes('<a class="row-source" href="/sources/publisher/credited/">example.org / © OeAD &lt;script&gt;alert(1)&lt;/script&gt;</a>'));
+    assert.ok(!creditedRow.includes('Source attribution:'));
+    assert.ok(!creditedRow.includes('source-attribution'));
+    assert.ok(!creditedRow.includes('<script>alert(1)</script>'));
+    const ordinaryRow = (html.match(/<tr class="opportunity"[^>]*>[\s\S]*?<\/tr>/g) || [])
+        .find(row => row.includes('/opportunity/ordinary-record/'));
+    assert.ok(ordinaryRow.includes('href="/sources/publisher/ordinary/">example.org</a>'));
+  }
+  const listing = listings[1];
+  const indexPath = listing.match(/data-index="([^"]+)"/)[1];
+  const index = JSON.parse(await fs.readFile(path.join(out, indexPath), 'utf8'));
+  assert.ok(index.find(item => item.id === 'credited-record').search.includes('© OeAD'));
+
   for(const html of listings){const ordinaryRow=(html.match(/<tr class="opportunity"[^>]*>[\s\S]*?<\/tr>/g)||[]).find(row=>row.includes('/opportunity/ordinary-record/'));assert.ok(ordinaryRow);assert.ok(!ordinaryRow.includes('source-attribution'));}
   const ordinary=await fs.readFile(path.join(out,'opportunity/ordinary-record/index.html'),'utf8');assert.ok(!ordinary.includes('source-attribution'));assert.equal((sources.match(/class="small source-attribution"/g)||[]).length,1);
  }finally{await fs.rm(dir,{recursive:true,force:true});}

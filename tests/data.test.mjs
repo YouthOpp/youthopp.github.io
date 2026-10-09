@@ -82,3 +82,18 @@ test('build ordering respects UTC end-of-day and explicit timestamp zones', () =
   assert.deepEqual(sorted(Date.parse('2026-10-10T00:00:00Z')),
       ['unknown', 'past', 'near', 'today']);
 });
+
+
+test('public source names use website domains without changing source IDs', async t => {
+  const root = await fixture(t, [], {
+    status: 'success',
+    name: 'de-rausvonzuhaus',
+    website_url: 'https://www.rausvonzuhaus.de/lastminute',
+    attribution: 'rausvonzuhaus.de / Eurodesk Deutschland (IJAB)',
+  });
+  const source = (await loadData(root)).sources[0];
+  assert.equal(source.name, 'rausvonzuhaus.de');
+  assert.equal(source.id, 'example-source');
+  assert.equal(source.attribution,
+      'rausvonzuhaus.de / Eurodesk Deutschland (IJAB)');
+});

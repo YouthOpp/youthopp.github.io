@@ -21,10 +21,10 @@ test('publisher country pages include failed sources without inferring opportuni
   for(const route of ['/sources/countries/','/sources/countries/de/','/sources/countries/fr/','/sources/countries/international/'])assert.ok(result.routes.includes(route));
   assert.ok(!result.routes.includes('/countries/de/'));
   const german=await fs.readFile(path.join(out,'sources/countries/de/index.html'),'utf8');
-  assert.ok(german.includes('<h2>German publisher</h2>'));assert.ok(!german.includes('<h2>French publisher</h2>'));
+  assert.ok(german.includes('<h2>example.org</h2>'));assert.ok(german.includes('href="/project/sources/publisher/de-source/"'));assert.ok(!german.includes('href="/project/sources/publisher/fr-source/"'));
   assert.ok(german.includes('fail'));assert.ok(german.includes('Fetch failed'));
   assert.ok(german.includes('href="/project/sources/countries/fr/"'));
-  const global=await fs.readFile(path.join(out,'sources/countries/international/index.html'),'utf8');assert.ok(global.includes('<h2>Global publisher</h2>'));
+  const global=await fs.readFile(path.join(out,'sources/countries/international/index.html'),'utf8');assert.ok(global.includes('<h2>example.org</h2>'));assert.ok(global.includes('href="/project/sources/publisher/global/"'));
   const opportunity=await fs.readFile(path.join(out,'opportunity/record/index.html'),'utf8');assert.ok(opportunity.includes('<dt>Destination</dt><dd>Not provided</dd>'));
   const home=await fs.readFile(path.join(out,'index.html'),'utf8');assert.ok(home.includes('href="/project/opportunities/"'));assert.ok(home.includes('href="/project/opportunities/from/de/"'));
   const sitemap=await fs.readFile(path.join(out,'sitemap-pages.xml'),'utf8');assert.ok(sitemap.includes('https://example.org/project/sources/countries/fr/'));

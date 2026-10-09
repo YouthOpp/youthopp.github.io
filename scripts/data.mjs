@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import {compareDeadlineTimes} from '../assets/discovery.js';
 
 const categories = ['scholarships','internships','volunteering','training','jobs','competitions','grants','fellowships','other'];
 const safeUrl = value => { try { const url = new URL(value); return ['http:','https:'].includes(url.protocol) && !url.username && !url.password; } catch { return false; } };
@@ -30,9 +31,9 @@ export function deadlineTime(value) {
  const time = Date.parse(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T23:59:59.999Z` : value);
  return Number.isFinite(time) ? time : Infinity;
 }
-export function compareDeadlines(a,b) {
- const first=deadlineTime(a.deadline), second=deadlineTime(b.deadline);
- return (first===second ? 0 : first<second ? -1 : 1) || a.id.localeCompare(b.id);
+export function compareDeadlines(a, b, now = Date.now()) {
+  return compareDeadlineTimes(deadlineTime(a.deadline),
+      deadlineTime(b.deadline), now) || a.id.localeCompare(b.id);
 }
 
 async function readJson(file) {
@@ -69,5 +70,10 @@ export async function loadData(datasPath) {
    opportunities.push({...record,source:entry.name,publisher_country:record.publisher_country??country});
   }
  }
- return {opportunities:opportunities.sort(compareDeadlines),sources,generated_at:new Date().toISOString()};
+ const now = Date.now();
+ return {
+   opportunities: opportunities.sort((a, b) => compareDeadlines(a, b, now)),
+   sources,
+   generated_at: new Date(now).toISOString(),
+ };
 }

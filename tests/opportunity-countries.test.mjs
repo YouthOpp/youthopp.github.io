@@ -16,7 +16,13 @@ test('country selection includes later pages and opens records instead of publis
   const list=await fs.readFile(path.join(out,'opportunities/index.html'),'utf8');
   assert.ok(list.includes('name="country"'));assert.ok(list.includes('name="destination"'));assert.ok(list.includes('data-index='));
   assert.ok(result.routes.includes('/opportunities/from/de/'));
-  const script=list.match(/src="(\/assets\/index\.[a-f0-9]{16}\.js)"/)[1];assert.equal(await fs.readFile(path.join(out,script),'utf8'),await fs.readFile(new URL('../assets/index.js',import.meta.url),'utf8'));
+  const script = list.match(/src="(\/assets\/index\.[a-f0-9]{16}\.js)"/)[1];
+  const generated = await fs.readFile(path.join(out, script), 'utf8');
+  const discovery = generated.match(/'\.\/(discovery\.[a-f0-9]{16}\.js)'/)[1];
+  assert.equal(generated.replace(discovery, 'discovery.js'),
+      await fs.readFile(new URL('../assets/index.js', import.meta.url), 'utf8'));
+  assert.equal(await fs.readFile(path.join(out, 'assets', discovery), 'utf8'),
+      await fs.readFile(new URL('../assets/discovery.js', import.meta.url), 'utf8'));
   const german=await fs.readFile(path.join(out,'opportunities/from/de/index.html'),'utf8');
   assert.ok(german.includes('class="opportunity"'));assert.ok(german.includes('Programme 30'));assert.ok(!german.includes('class="source-card"'));
   assert.ok(!german.includes('Programme 0</a>'));

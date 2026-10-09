@@ -1,4 +1,4 @@
-import {filterItems, pageNumbers, pageSlice, isExpired} from './discovery.js';
+import {filterItems, pageNumbers, pageSlice, isExpired, sortOpportunities} from './discovery.js';
 
 const compactLayout = window.matchMedia('(max-width: 1000px)');
 const compactBrowse = () => {
@@ -16,9 +16,44 @@ function updateExpiry() {
  }
 }
 updateExpiry();
-setInterval(updateExpiry, 30_000);
-document.addEventListener('visibilitychange', updateExpiry);
-window.addEventListener('pageshow', updateExpiry);
+const refreshListings = [];
+function refreshDeadlines() {
+  updateExpiry();
+  for (const refresh of refreshListings) {
+    refresh();
+  }
+}
+setInterval(refreshDeadlines, 30_000);
+document.addEventListener('visibilitychange', refreshDeadlines);
+window.addEventListener('pageshow', refreshDeadlines);
+
+for (const preview of document.querySelectorAll('[data-preview-index]')) {
+  let request;
+  let previousHtml;
+  async function refresh() {
+    try {
+      if (!request) {
+        request = fetch(preview.dataset.previewIndex).then(response => {
+          if (!response.ok) {
+            throw new Error('Preview index unavailable');
+          }
+          return response.json();
+        });
+      }
+      const items = sortOpportunities(await request).slice(0, 12);
+      const html = items.map(item => item.html).join('');
+      if (html !== previousHtml) {
+        preview.innerHTML = html;
+        previousHtml = html;
+      }
+      updateExpiry();
+    } catch {
+      request = null;
+    }
+  }
+  refreshListings.push(refresh);
+  refresh();
+}
 
 for (const collection of document.querySelectorAll('.collection')) {
  const form = collection.querySelector('form');
@@ -26,8 +61,8 @@ for (const collection of document.querySelectorAll('.collection')) {
  const status = collection.querySelector('.filter-status');
  const navigation = collection.querySelector('.pagination');
  const fields = [...form.querySelectorAll('input[name],select[name]')];
- const initialPage = Number(collection.dataset.page);
- let currentPage = initialPage;
+ let currentPage = Number(collection.dataset.page);
+ let expiryState;
  let request;
  let generation = 0;
  const readState = () => Object.fromEntries(fields.map(field => [field.name, field.value]));
@@ -56,7 +91,9 @@ for (const collection of document.querySelectorAll('.collection')) {
   try {
    const items = await load();
    if (version !== generation) return;
-   const filtered = filterItems(items, readState());
+   const now = Date.now();
+   expiryState = items.map(item => isExpired(item.deadline, now)).join(',');
+   const filtered = filterItems(sortOpportunities(items, now), readState());
    const page = pageSlice(filtered, currentPage, Number(collection.dataset.pageSize));
    currentPage = page.current;
    // These fragments are generated and escaped by our build, not browser input.
@@ -96,5 +133,17 @@ for (const collection of document.querySelectorAll('.collection')) {
  form.addEventListener('reset',()=>{clearTimeout(debounce);setTimeout(()=>{currentPage=1;render('push');},0);});
  window.addEventListener('popstate',()=>{restore();render();});
  restore();
- if(location.search) render();
+ refreshListings.push(async () => {
+   try {
+     const items = await load();
+     const now = Date.now();
+     const nextState = items.map(item => isExpired(item.deadline, now)).join(',');
+     if (nextState !== expiryState) {
+       render();
+     }
+   } catch {
+     // Static listings stay available when the index cannot be loaded.
+   }
+ });
+ render();
 }

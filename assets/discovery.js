@@ -19,3 +19,21 @@ export function pageNumbers(total,current) {
 export function isExpired(deadline,now=Date.now()) {
  return deadline!=='' && deadline!=null && Number.isFinite(Number(deadline)) && Number(deadline)<now;
 }
+
+// Both build records and browser indexes use epoch milliseconds here.
+export function compareDeadlineTimes(first, second, now) {
+  const firstExpired = isExpired(first, now);
+  const secondExpired = isExpired(second, now);
+  if (firstExpired !== secondExpired) {
+    return firstExpired ? 1 : -1;
+  }
+  const firstTime = first == null ? Infinity : Number(first);
+  const secondTime = second == null ? Infinity : Number(second);
+  return firstTime === secondTime ? 0 : firstTime < secondTime ? -1 : 1;
+}
+
+export function sortOpportunities(items, now = Date.now()) {
+  return [...items].sort((first, second) =>
+    compareDeadlineTimes(first.deadline, second.deadline, now) ||
+    (first.id || '').localeCompare(second.id || ''));
+}

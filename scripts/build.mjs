@@ -104,14 +104,30 @@ const dest=path.join(out,route,'index.html');await fs.mkdir(path.dirname(dest),{
 const recordSource=r=>sources.find(s=>(s.id||s.source)===r.source);
 const recordPublisherCountry=r=>/^[A-Z]{2}$/.test(r.publisher_country||'')?r.publisher_country:publisherCountry(recordSource(r));
 const sourceName=r=>recordSource(r)?.name||r.source||'Original source';
-const listingSourceName = record => {
+const sourceInstitution = record => {
   const attribution = recordSource(record)?.attribution;
-  const name = sourceName(record);
   if (typeof attribution !== 'string' || !attribution.trim()) {
-    return name;
+    return '';
   }
-  const credit = attribution.trim();
-  return credit.includes(name) ? credit : `${name} / ${credit}`;
+  const credit = attribution.trim().replace(/^Source:\s*/i, '');
+  for (const name of [sourceName(record), `www.${sourceName(record)}`]) {
+    if (credit.startsWith(`${name} / `)) {
+      return credit.slice(name.length + 3).trim();
+    }
+    if (credit === name) {
+      return '';
+    }
+  }
+  return credit;
+};
+const sourceCell = record => {
+  const institution = sourceInstitution(record) || 'Institution not provided';
+  const website = safeUrl(recordSource(record)?.website_url);
+  const websiteLine = website === '#' ?
+    '<span class="row-source-website">Website not provided</span>' :
+    `<a class="row-source-website" href="${e(website)}" rel="noopener noreferrer">${e(sourceName(record))}</a>`;
+  return `<a class="row-source" href="/sources/publisher/${slug(record.source)}/">${e(institution)}</a>` +
+    websiteLine;
 };
 const sourceAttribution=s=>typeof s?.attribution==='string'&&s.attribution.trim()?`<p class="small source-attribution">Source attribution: ${e(s.attribution)}</p>`:'';
 const kindDefinitions={
@@ -128,7 +144,7 @@ const detailAction=r=>recordKinds(r)[0]?.action||'Read the original & apply ↗'
 const detailDescription=r=>r.summary.trim()||recordKinds(r)[0]?.note||'Original-source opportunity information. Confirm dates, eligibility and application details with the publisher.';
 const deadline=r=>`${r.deadline?`<time datetime="${e(r.deadline)}">${date(r.deadline)}</time>`:'<span>Not provided</span>'}<span class="expiry-label" hidden>Expired</span>`;
 const expiry=r=>Number.isFinite(deadlineTime(r.deadline))?` data-deadline="${deadlineTime(r.deadline)}"`:'';
-const row=r=>`<tr class="opportunity"${expiry(r)}><td><a class="row-title" lang="${e(r.language||'und')}" href="/opportunity/${slug(r.id)}/">${e(r.title)}</a><span class="row-category">${e(label(r.category))}${recordKinds(r).map(kind=>` · <span class="tag">${e(kind.label)}</span><span class="sr-only"> ${e(kind.note)}</span>`).join('')}</span></td><td data-label="Source"><a class="row-source" href="/sources/publisher/${slug(r.source)}/">${e(listingSourceName(r))}</a></td><td data-label="Destination">${r.host_countries.length?e(r.host_countries.map(countryName).join(', ')):'Not provided'}</td><td data-label="Deadline">${deadline(r)}</td></tr>`;
+const row=r=>`<tr class="opportunity"${expiry(r)}><td><a class="row-title" lang="${e(r.language||'und')}" href="/opportunity/${slug(r.id)}/">${e(r.title)}</a><span class="row-category">${e(label(r.category))}${recordKinds(r).map(kind=>` · <span class="tag">${e(kind.label)}</span><span class="sr-only"> ${e(kind.note)}</span>`).join('')}</span></td><td data-label="Source">${sourceCell(r)}</td><td data-label="Destination">${r.host_countries.length?e(r.host_countries.map(countryName).join(', ')):'Not provided'}</td><td data-label="Deadline">${deadline(r)}</td></tr>`;
 const rows=items=>`<div class="index-table"><table><caption class="sr-only">Opportunities with sources, destinations and deadlines</caption><thead><tr><th scope="col">Opportunity</th><th scope="col">Source</th><th scope="col">Destination</th><th scope="col">Deadline</th></tr></thead><tbody class="collection-results">${items.map(row).join('')}</tbody></table></div>`;
 const option=(value,text)=>`<option value="${e(value)}">${e(text)}</option>`;
 function controls(items,isSources=false){
@@ -143,8 +159,8 @@ const indexedRecord = record => {
     id: record.id,
     deadline: Number.isFinite(time) ? time : null,
     html: row(record),
-    search: [record.title, record.summary, listingSourceName(record),
-      sourceName(record), record.source,
+    search: [record.title, record.summary, sourceName(record),
+      recordSource(record)?.attribution, record.source,
       record.category, ...record.host_countries.map(countryName)].join(' '),
     category: recordCategories(record),
     source: record.source,

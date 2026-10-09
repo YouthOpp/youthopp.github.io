@@ -127,6 +127,16 @@ td, th { border: 1px solid var(--line); padding: 10px; text-align: left; }
 .row-title:hover, .row-source:hover { text-decoration: underline; }
 .row-category { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }
 .row-source { font-size: 12px; color: var(--muted); text-decoration: none; }
+.row-source-website {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.row-source-website:hover {
+  text-decoration: underline;
+}
 .tag { font-size: 11px; color: var(--green); font-weight: 750; background: var(--accent); border-radius: 5px; padding: 5px 9px; }
 .expiry-label { display: block; font-size: 11px; font-weight: 650; color: #5d6470; margin-top: 4px; }
 .opportunity.expired { background: #f4f5f6; }

@@ -43,6 +43,7 @@ async function readJson(file) {
 function validateRecord(record, ids, file) {
  if (!record || typeof record.id!=='string' || !/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/.test(record.id) || ids.has(record.id.toLowerCase())) throw new Error(`Duplicate or unsafe record ID in ${file}`);
  if (typeof record.title!=='string' || !record.title.trim() || typeof record.summary!=='string' || record.summary.length>600 || !safeUrl(record.url) || !categories.includes(record.category) || !['open','expired','unknown'].includes(record.status) || !Array.isArray(record.host_countries) || !Array.isArray(record.eligible_countries) || [...record.host_countries,...record.eligible_countries].some(code=>typeof code!=='string'||! /^[A-Z]{2}$/.test(code))) throw new Error(`Malformed opportunity contract in ${file} (${record.id})`);
+ if (Object.hasOwn(record, 'summary_language') && (typeof record.summary_language !== 'string' || !/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/.test(record.summary_language))) throw new Error(`Invalid opportunity summary language in ${file} (${record.id})`);
  for(const key of ['deadline','published_at','last_checked_at']) if(record[key]!=null && !validDate(record[key])) throw new Error(`Invalid opportunity date ${key} in ${file}; use a calendar date or an ISO timestamp with timezone`);
  ids.add(record.id.toLowerCase());
 }

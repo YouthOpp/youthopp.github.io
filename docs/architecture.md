@@ -59,3 +59,7 @@ Search and combined filters cover the whole selected collection before paginatio
 Cloudflare Pages uses Node.js 22, `npm run build`, output `dist`, and the website's `main` branch. `npm run check` runs tests, build and output verification; the website check Action runs it on PRs and main.
 
 The selected data-source revision must contain `datas/`. The local migrated data can be checked with `DATA_PATH`, but it must be published and pinned before production rollout. Live Cloudflare deployment has not been verified here.
+
+## Text languages
+
+Opportunity titles and listing links retain the source record’s `language`. An optional `summary_language` language tag controls the detail description independently, so an English factual summary can accompany an original Croatian title. Older records fall back to `language`, then `und`; intentionally localized summaries retain their declared language. Present summary tags must be nonempty language tags such as `en`, `bg` or `en-GB`.

@@ -97,3 +97,16 @@ test('public source names use website domains without changing source IDs', asyn
   assert.equal(source.attribution,
       'rausvonzuhaus.de / Eurodesk Deutschland (IJAB)');
 });
+
+
+test('optional summary language preserves valid tags and rejects malformed values', async t => {
+  const root = await fixture(t, [record({language: 'hr', summary_language: 'en-GB'})]);
+  const data = await loadData(root);
+  assert.equal(data.opportunities[0].language, 'hr');
+  assert.equal(data.opportunities[0].summary_language, 'en-GB');
+  for (const summary_language of [null, '', 7, [], 'en GB', 'en_GB', 'en" onclick="x']) {
+    await fs.writeFile(path.join(root, 'example-source', 'data.json'),
+        JSON.stringify([record({summary_language})]));
+    await assert.rejects(loadData(root), /Invalid opportunity summary language/);
+  }
+});

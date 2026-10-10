@@ -277,3 +277,36 @@ test('deadline order retains expired records and collection indexes include late
   assert.deepEqual(index[0].destination,['DE']);assert.deepEqual(index[0].eligible,['FR']);
  }finally{await fs.rm(dir,{recursive:true,force:true});}
 });
+
+
+test('detail summaries have independent language without changing title languages', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'youthopp-languages-'));
+  try {
+    const input = path.join(dir, 'datas');
+    const out = path.join(dir, 'site');
+    const base = {
+      summary: 'A factual description', category: 'training',
+      host_countries: [], eligible_countries: [], source: 'fixture',
+      url: 'https://example.org/real', status: 'unknown',
+    };
+    await writeSources(input, {opportunities: [
+      {...base, id: 'mixed', title: 'Izvorni naslov', language: 'hr', summary_language: 'en'},
+      {...base, id: 'localized', title: 'Програма', language: 'bg', summary_language: 'bg'},
+      {...base, id: 'legacy', title: 'Alter Titel', language: 'de'},
+      {...base, id: 'unspecified', title: 'Unknown language'},
+    ]});
+    await build({input, out});
+    for (const [id, titleLanguage, summaryLanguage] of [
+      ['mixed', 'hr', 'en'], ['localized', 'bg', 'bg'],
+      ['legacy', 'de', 'de'], ['unspecified', 'und', 'und'],
+    ]) {
+      const html = await fs.readFile(path.join(out, 'opportunity', id, 'index.html'), 'utf8');
+      assert.ok(html.includes(`<h1 class="page-title" lang="${titleLanguage}">`));
+      assert.ok(html.includes(`<p class="lede" lang="${summaryLanguage}">`));
+    }
+    const listing = await fs.readFile(path.join(out, 'opportunities/index.html'), 'utf8');
+    assert.match(listing, /lang="hr"[^>]*>Izvorni naslov/);
+  } finally {
+    await fs.rm(dir, {recursive: true, force: true});
+  }
+});
